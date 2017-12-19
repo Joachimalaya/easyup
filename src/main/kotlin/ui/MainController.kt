@@ -1,16 +1,14 @@
 package ui
 
 import entity.Placeholder
-import entity.UploadDataTemplate
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
-import javafx.scene.control.*
-import javafx.stage.FileChooser
-import javafx.stage.Window
-import org.codehaus.jackson.JsonFactory
-import org.codehaus.jackson.map.ObjectMapper
-import java.io.File
+import javafx.scene.control.Control
+import javafx.scene.control.TableView
+import javafx.scene.control.TextArea
+import javafx.scene.control.TextField
+import template.read.PrepareUploadService
 import java.net.URL
 import java.util.*
 
@@ -23,7 +21,10 @@ class MainController : Initializable {
     var descriptionPreview: TextArea = TextArea()
 
     @FXML
-    var keyTable: TableView<Placeholder> = TableView()
+    var placeholderTable: TableView<Placeholder> = TableView()
+
+    // TODO: rename
+    private val prepareUploadService = PrepareUploadService()
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         // NOP
@@ -32,39 +33,6 @@ class MainController : Initializable {
     @FXML
     private fun handleUploadAction(event: ActionEvent) {
         val window = (event.source as Control).scene.window
-        val videoFile = askForVideoFile(window)
-        val template = askForTemplate(window)
-
-        if (videoFile == null || template == null) {
-            Alert(Alert.AlertType.ERROR, "You need to provide both a video file and a template.", ButtonType.OK).showAndWait()
-            return
-        }
-
-        titlePreview.text = template.titleTemplate
-        descriptionPreview.text = template.descriptionTemplate
+        prepareUploadService.handleUploadAction(window, titlePreview, descriptionPreview, placeholderTable)
     }
-
-    private fun askForVideoFile(window: Window): File? {
-        val chooser = FileChooser()
-        chooser.title = "Select video to upload"
-
-        return chooser.showOpenDialog(window)
-    }
-
-    private fun askForTemplate(window: Window): UploadDataTemplate? {
-        val chooser = FileChooser()
-        chooser.title = "Select a template file"
-
-        chooser.extensionFilters.add(FileChooser.ExtensionFilter("template definitions (JSON)", "*.json"))
-
-        val templateFile = chooser.showOpenDialog(window)
-        return if (templateFile != null) {
-            val mapper = ObjectMapper(JsonFactory())
-            mapper.readValue(templateFile, UploadDataTemplate::class.java)
-        } else {
-            null
-        }
-
-    }
-
 }

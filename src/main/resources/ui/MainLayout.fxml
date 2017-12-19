@@ -1,24 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.GridPane?>
-<?import java.net.*?>
-<?import java.lang.Integer?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.Spinner?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.SelectionMode?>
-<?import javafx.scene.control.cell.*?>
-<?import javafx.collections.*?>
 <?language javascript?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.control.cell.TextFieldTableCell?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
 
 <GridPane xmlns:fx="http://javafx.com/fxml/1" styleClass="root" hgap="5" vgap="5" fx:controller="ui.MainController">
     <padding>
@@ -26,12 +16,25 @@
     </padding>
 
 
-    <Button GridPane.columnIndex="0" GridPane.rowIndex="0" text="UPLOAD" onAction="#handleUploadAction"/>
+    <Button GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" maxWidth="Infinity"
+            text="Start new upload" onAction="#handleUploadAction"/>
 
-    <TableView GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.rowSpan="2" fx:id="keyTable">
+    <TableView GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.rowSpan="2" fx:id="placeholderTable"
+               disable="true" editable="true">
         <columns>
-            <TableColumn text="Key" prefWidth="${keyTable.width*0.3}"/>
-            <TableColumn text="Value" prefWidth="${keyTable.width*0.7}"/>
+            <TableColumn text="Key" prefWidth="${placeholderTable.width*0.3}">
+                <cellValueFactory>
+                    <PropertyValueFactory property="key"/>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Value" prefWidth="${placeholderTable.width*0.7}">
+                <cellValueFactory>
+                    <PropertyValueFactory property="value"/>
+                </cellValueFactory>
+                <cellFactory>
+                    <TextFieldTableCell fx:factory="forTableColumn"/>
+                </cellFactory>
+            </TableColumn>
         </columns>
         <items>
             <FXCollections fx:factory="observableArrayList">
@@ -41,11 +44,11 @@
     </TableView>
 
     <Text GridPane.columnIndex="1" GridPane.rowIndex="2" text="Title"/>
-    <TextField GridPane.columnIndex="2" GridPane.rowIndex="2" fx:id="titlePreview" editable="false"/>
+    <TextField GridPane.columnIndex="2" GridPane.rowIndex="2" fx:id="titlePreview" editable="false" disable="true"/>
 
     <Text GridPane.columnIndex="1" GridPane.rowIndex="3" text="Description"/>
     <TextArea GridPane.columnIndex="2" GridPane.rowIndex="3" GridPane.rowSpan="2" fx:id="descriptionPreview"
-              editable="false"/>
+              editable="false" disable="true"/>
 
     <!-- TODO: add widgets -->
 
