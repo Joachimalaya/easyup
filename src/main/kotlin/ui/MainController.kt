@@ -1,6 +1,5 @@
 package ui
 
-import auth.jsonFactory
 import entity.Placeholder
 import entity.UploadDataTemplate
 import javafx.event.ActionEvent
@@ -9,6 +8,8 @@ import javafx.fxml.Initializable
 import javafx.scene.control.*
 import javafx.stage.FileChooser
 import javafx.stage.Window
+import org.codehaus.jackson.JsonFactory
+import org.codehaus.jackson.map.ObjectMapper
 import java.io.File
 import java.net.URL
 import java.util.*
@@ -41,7 +42,6 @@ class MainController : Initializable {
 
         titlePreview.text = template.titleTemplate
         descriptionPreview.text = template.descriptionTemplate
-
     }
 
     private fun askForVideoFile(window: Window): File? {
@@ -59,7 +59,8 @@ class MainController : Initializable {
 
         val templateFile = chooser.showOpenDialog(window)
         return if (templateFile != null) {
-            jsonFactory.fromInputStream(templateFile.inputStream(), UploadDataTemplate::class.java)
+            val mapper = ObjectMapper(JsonFactory())
+            mapper.readValue(templateFile, UploadDataTemplate::class.java)
         } else {
             null
         }
