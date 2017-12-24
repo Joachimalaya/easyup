@@ -1,5 +1,7 @@
 package ui
 
+import config.activeConfig
+import exec.appDirectory
 import javafx.application.Application
 import javafx.event.EventHandler
 import javafx.fxml.FXMLLoader
@@ -23,10 +25,10 @@ class UISetup : Application() {
         primaryStage.show()
         primaryStage.title = "easyUp"
 
-        primaryStage.onCloseRequest = EventHandler {
-            // TODO("write config on termination")
-        }
 
+        primaryStage.onCloseRequest = EventHandler {
+            activeConfig.writeToDefault()
+        }
     }
 
     fun launchApp(args: Array<String>) {

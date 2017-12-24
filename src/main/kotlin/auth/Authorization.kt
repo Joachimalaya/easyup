@@ -10,14 +10,18 @@ import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.client.util.store.FileDataStoreFactory
 import com.google.api.services.youtube.YouTube
 import exec.appDirectory
+import javafx.scene.control.Alert
+import javafx.scene.control.ButtonType
 import java.io.File
 import java.io.InputStreamReader
 
-val authDirectory = File(appDirectory.toString() + "/auth")
-val jsonFactory = JacksonFactory()
-val httpTransport = NetHttpTransport()
+object Authorization {
 
-class Authorization {
+    private val authDirectory = File(appDirectory.toString() + "/auth")
+    private val jsonFactory = JacksonFactory()
+    private val httpTransport = NetHttpTransport()
+
+
 
     fun createAuthorizedYouTube(): YouTube {
 
@@ -26,8 +30,8 @@ class Authorization {
         // check for client secret
         val clientId = File(authDirectory.toString() + "/client_id.json")
         if (!clientId.exists()) {
-            // TODO handle properly
-            TODO("could not find " + clientId.toString() + " necessary to connect to YouTube; terminating")
+            Alert(Alert.AlertType.ERROR, "Could not find $clientId, necessary to connect to YouTube.\nYou can create credential files using Google APIs.\nWill now terminate.", ButtonType.OK).showAndWait()
+            throw RuntimeException("Could not find $clientId, necessary to connect to YouTube.\nYou can create credential files using Google APIs.\nWill now terminate.")
         }
 
         val clientSecrets = GoogleClientSecrets.load(jsonFactory, InputStreamReader(clientId.inputStream()))

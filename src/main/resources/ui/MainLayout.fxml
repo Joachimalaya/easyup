@@ -17,7 +17,9 @@
 
 
     <Button GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" maxWidth="Infinity"
-            text="Start new upload" onAction="#handleUploadAction"/>
+            text="Prepare new upload" onAction="#handlePrepareAction"/>
+    <Button GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2" maxWidth="Infinity"
+            text="Prepare new upload" onAction="#handleUploadStartAction"/>
 
     <TableView GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.rowSpan="2" fx:id="placeholderTable"
                disable="true" editable="true">
@@ -27,7 +29,7 @@
                     <PropertyValueFactory property="key"/>
                 </cellValueFactory>
             </TableColumn>
-            <TableColumn text="Value" prefWidth="${placeholderTable.width*0.7}">
+            <TableColumn text="Value" prefWidth="${placeholderTable.width*0.7}" onEditCommit="#handlePlaceholderUpdate">
                 <cellValueFactory>
                     <PropertyValueFactory property="value"/>
                 </cellValueFactory>
