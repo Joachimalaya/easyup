@@ -6,20 +6,21 @@ import javafx.scene.control.TableColumn
 import javafx.scene.control.TextArea
 import javafx.scene.control.TextField
 
+fun replacePlaceholders(text: String, placeholders: List<Placeholder>): String {
+    var replacedText = text
+    placeholders.filter { it.value.isNotBlank() }.forEach{
+        replacedText = replacedText.replace(Regex("\\{${it.key}}"), it.value)
+    }
+    return replacedText
+}
+
 class PlaceholderUpdateService {
 
     fun updatePlaceholders(event: TableColumn.CellEditEvent<Placeholder, String>, titlePreview: TextField, descriptionPreview: TextArea, activeData: UploadData) {
         event.tableView.items[event.tablePosition.row].value = event.newValue
 
-        var replacedTitlePreview = activeData.title
-        var replacedDescriptionPreview = activeData.description
-        event.tableView.items.filtered { it.value.isNotBlank() }.forEach {
-            replacedTitlePreview = replacedTitlePreview.replace(Regex("\\{${it.key}}"), it.value)
-            replacedDescriptionPreview = replacedDescriptionPreview.replace(Regex("\\{${it.key}}"), it.value)
-        }
-
-        titlePreview.text = replacedTitlePreview
-        descriptionPreview.text = replacedDescriptionPreview
+        titlePreview.text = replacePlaceholders(activeData.title, event.tableView.items)
+        descriptionPreview.text = replacePlaceholders(activeData.description, event.tableView.items)
     }
 
 }
