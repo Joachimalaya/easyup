@@ -19,7 +19,7 @@
     <Button GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" maxWidth="Infinity"
             text="Prepare new upload" onAction="#handlePrepareAction"/>
     <Button GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2" maxWidth="Infinity"
-            text="Prepare new upload" onAction="#handleUploadStartAction"/>
+            text="Start upload" onAction="#handleUploadStartAction"/>
 
     <TableView GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.rowSpan="2" fx:id="placeholderTable"
                disable="true" editable="true">

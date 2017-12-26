@@ -3,6 +3,7 @@ package template.read
 import com.google.common.collect.Lists
 import config.activeConfig
 import entity.Placeholder
+import entity.UploadData
 import entity.UploadDataTemplate
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
@@ -19,26 +20,26 @@ val formatPattern = Pattern.compile("\\{(\\w*)}")!!
 
 class PrepareUploadService {
 
-    fun handleUploadAction(window: Window, titlePreview: TextInputControl, descriptionPreview: TextInputControl, placeholderTable: TableView<Placeholder>): UploadDataTemplate {
+    fun handleUploadAction(window: Window, titlePreview: TextInputControl, descriptionPreview: TextInputControl, placeholderTable: TableView<Placeholder>): UploadData {
         val videoFile = askForVideoFile(window)
         activeConfig.updateLastVisitedDirectory(videoFile)
         val template = askForTemplate(window)
 
         if (videoFile == null || template == null) {
             Alert(Alert.AlertType.ERROR, "You need to provide both a video file and a template.", ButtonType.OK).showAndWait()
-            return UploadDataTemplate()
+            return UploadData()
         }
 
         titlePreview.text = template.titleTemplate
         descriptionPreview.text = template.descriptionTemplate
 
-        placeholderTable.items.addAll((findAllPlaceholders(template.titleTemplate) + findAllPlaceholders(template.titleTemplate)).distinct())
+        placeholderTable.items.addAll((findAllPlaceholders(template.titleTemplate) + findAllPlaceholders(template.descriptionTemplate)).distinct())
 
         titlePreview.isDisable = false
         descriptionPreview.isDisable = false
         placeholderTable.isDisable = false
 
-        return template
+        return UploadData(template, videoFile)
     }
 
     private fun findAllPlaceholders(template: String): List<Placeholder> {

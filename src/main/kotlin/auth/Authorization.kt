@@ -21,8 +21,6 @@ object Authorization {
     private val jsonFactory = JacksonFactory()
     private val httpTransport = NetHttpTransport()
 
-
-
     fun createAuthorizedYouTube(): YouTube {
 
         val scopes = listOf("https://www.googleapis.com/auth/youtube.upload")

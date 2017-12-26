@@ -1,7 +1,7 @@
 package ui
 
 import entity.Placeholder
-import entity.UploadDataTemplate
+import entity.UploadData
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
@@ -12,6 +12,7 @@ import javafx.scene.control.TextArea
 import javafx.scene.control.TextField
 import template.fill.PlaceholderUpdateService
 import template.read.PrepareUploadService
+import upload.UploadService
 import java.net.URL
 import java.util.*
 
@@ -28,8 +29,10 @@ class MainController : Initializable {
 
     private val prepareUploadService = PrepareUploadService()
     private val placeholderUpdateService = PlaceholderUpdateService()
+    private val uploadService = UploadService()
 
-    private var activeTemplate = UploadDataTemplate()
+
+    private var activeData = UploadData()
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         // NOP
@@ -38,15 +41,15 @@ class MainController : Initializable {
     @FXML
     private fun handlePrepareAction(event: ActionEvent) {
         val window = (event.source as Control).scene.window
-        activeTemplate = prepareUploadService.handleUploadAction(window, titlePreview, descriptionPreview, placeholderTable)
+        activeData = prepareUploadService.handleUploadAction(window, titlePreview, descriptionPreview, placeholderTable)
     }
 
     @FXML
     private fun handleUploadStartAction(event: ActionEvent) {
-        // TODO: implement
+        uploadService.beginUpload(activeData)
     }
 
     @FXML
     private fun handlePlaceholderUpdate(event: CellEditEvent<Placeholder, String>) =
-            placeholderUpdateService.updatePlaceholders(event, titlePreview, descriptionPreview, activeTemplate)
+            placeholderUpdateService.updatePlaceholders(event, titlePreview, descriptionPreview, activeData)
 }
