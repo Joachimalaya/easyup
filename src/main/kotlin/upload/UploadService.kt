@@ -1,18 +1,17 @@
 package upload
 
-import com.google.api.client.googleapis.media.MediaHttpUploader
 import com.google.api.client.googleapis.media.MediaHttpUploaderProgressListener
 import com.google.api.client.http.InputStreamContent
-import com.google.api.services.youtube.model.Video
-import com.google.api.services.youtube.model.VideoSnippet
-import com.google.api.services.youtube.model.VideoStatus
-import com.google.common.collect.Lists
+import com.google.api.services.youtube.model.*
 import entity.Placeholder
 import entity.UploadData
 import exec.youTube
 import template.fill.replacePlaceholders
 import youtube.video.PrivacyStatus
 
+/**
+ * Handles the actual upload of data to YouTube by calling the API.
+ */
 class UploadService {
 
     fun beginUpload(uploadData: UploadData, placeholders: List<Placeholder>) {
@@ -33,14 +32,22 @@ class UploadService {
 
         val uploader = videoInsert.mediaHttpUploader
         uploader.isDirectUploadEnabled = false
-
-        val progressListener = MediaHttpUploaderProgressListener {
-                // TODO: implement progress display
+        uploader.progressListener = MediaHttpUploaderProgressListener {
+            // TODO: implement progress display
         }
 
-        uploader.progressListener = progressListener
-
         val returnedVideo = videoInsert.execute()
+
+        // add thumbnailFile
+        if(uploadData.thumbnailFile != null) {
+            val thumbnailSet = youTube.thumbnails().set(returnedVideo.id, InputStreamContent("image/*", uploadData.thumbnailFile!!.inputStream()))
+            thumbnailSet.mediaHttpUploader.isDirectUploadEnabled = false
+            thumbnailSet.mediaHttpUploader.progressListener = MediaHttpUploaderProgressListener {
+                // TODO: implement simple notification
+            }
+
+            thumbnailSet.execute()
+        }
     }
 
 }

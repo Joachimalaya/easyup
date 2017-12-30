@@ -46,7 +46,7 @@ class MainController : Initializable {
 
     @FXML
     private fun handleUploadStartAction(event: ActionEvent) {
-        uploadService.beginUpload(activeData)
+        uploadService.beginUpload(activeData, placeholderTable.items)
     }
 
     @FXML

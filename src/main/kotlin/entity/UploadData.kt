@@ -4,11 +4,11 @@ import exec.appDirectory
 import java.io.File
 import java.util.*
 
-data class UploadData(var title: String, var description: String, var game: String, var tags: Array<String>, var videoFile: File) {
+data class UploadData(var title: String, var description: String, var game: String, var tags: Array<String>, var videoFile: File, var thumbnailFile: File?) {
 
-    constructor(template: UploadDataTemplate, videoFile: File) : this(template.titleTemplate, template.descriptionTemplate, template.game, template.tags, videoFile)
+    constructor(template: UploadDataTemplate, videoFile: File, thumbnailFile: File?) : this(template.titleTemplate, template.descriptionTemplate, template.game, template.tags, videoFile, thumbnailFile)
 
-    constructor() : this(UploadDataTemplate(), appDirectory)
+    constructor() : this(UploadDataTemplate(), appDirectory, null)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
