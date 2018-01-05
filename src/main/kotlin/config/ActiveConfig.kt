@@ -6,7 +6,7 @@ import org.codehaus.jackson.JsonFactory
 import org.codehaus.jackson.map.ObjectMapper
 import java.io.File
 
-private fun getDefaultConfigFile(): File {
+private fun acquireDefaultConfigFile(): File {
     val file = File(appDirectory.toString() + "/config/config.json")
     Files.createParentDirs(file)
     return file
@@ -14,14 +14,14 @@ private fun getDefaultConfigFile(): File {
 
 private fun loadFromDefault(): ActiveConfig {
     return if(defaultConfigFile.exists()) {
-        mapper.readValue(defaultConfigFile.inputStream(), ActiveConfig::class.java)
+        defaultConfigFile.inputStream().use { mapper.readValue(it, ActiveConfig::class.java) }
     } else {
         ActiveConfig()
     }
 }
 
 private val mapper = ObjectMapper(JsonFactory())
-private val defaultConfigFile = getDefaultConfigFile()
+val defaultConfigFile = acquireDefaultConfigFile()
 val activeConfig: ActiveConfig = loadFromDefault()
 
 class ActiveConfig {
@@ -38,5 +38,5 @@ class ActiveConfig {
         }
     }
 
-    fun writeToDefault() = mapper.writeValue(defaultConfigFile.outputStream(), this)
+    fun writeToDefault() = defaultConfigFile.outputStream().use { mapper.writeValue(it, this) }
 }

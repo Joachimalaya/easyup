@@ -5,7 +5,6 @@ import config.activeConfig
 import entity.Placeholder
 import entity.UploadData
 import entity.UploadDataTemplate
-import exec.youTube
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.scene.control.TableView
@@ -19,9 +18,12 @@ import java.util.regex.Pattern
 
 val formatPattern = Pattern.compile("\\{(\\w*)}")!!
 
+/**
+ * Asks the user for input files. These will then be parsed and prepared for upload.
+ */
 class PrepareUploadService {
 
-    fun handleUploadAction(window: Window, titlePreview: TextInputControl, descriptionPreview: TextInputControl, placeholderTable: TableView<Placeholder>): UploadData {
+    fun handleUploadAction(window: Window, titlePreview: TextInputControl, descriptionPreview: TextInputControl, placeholderTable: TableView<Placeholder>, tagsPreview: TextInputControl): UploadData {
         val videoFile = askForVideoFile(window)
         val template = askForTemplate(window)
         val thumbnailFile = askForThumbnail(window)
@@ -33,12 +35,14 @@ class PrepareUploadService {
 
         titlePreview.text = template.titleTemplate
         descriptionPreview.text = template.descriptionTemplate
+        tagsPreview.text = template.tags.joinToString(", ")
 
         placeholderTable.items.addAll((findAllPlaceholders(template.titleTemplate) + findAllPlaceholders(template.descriptionTemplate)).distinct())
 
         titlePreview.isDisable = false
         descriptionPreview.isDisable = false
         placeholderTable.isDisable = false
+        tagsPreview.isDisable = false
 
         return UploadData(template, videoFile, thumbnailFile)
     }

@@ -5,11 +5,9 @@ import entity.UploadData
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
-import javafx.scene.control.Control
+import javafx.scene.control.*
 import javafx.scene.control.TableColumn.CellEditEvent
-import javafx.scene.control.TableView
-import javafx.scene.control.TextArea
-import javafx.scene.control.TextField
+import javafx.scene.layout.Pane
 import template.fill.PlaceholderUpdateService
 import template.read.PrepareUploadService
 import upload.UploadService
@@ -20,18 +18,20 @@ class MainController : Initializable {
 
     @FXML
     var titlePreview: TextField = TextField()
-
     @FXML
     var descriptionPreview: TextArea = TextArea()
-
     @FXML
     var placeholderTable: TableView<Placeholder> = TableView()
+    @FXML
+    var tagsPreview: TextField = TextField()
+    @FXML
+    var thumbnailPreview: Pane = Pane()
+    @FXML
+    var uploadProgress: ProgressBar = ProgressBar()
 
     private val prepareUploadService = PrepareUploadService()
     private val placeholderUpdateService = PlaceholderUpdateService()
     private val uploadService = UploadService()
-
-
     private var activeData = UploadData()
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
@@ -41,13 +41,12 @@ class MainController : Initializable {
     @FXML
     private fun handlePrepareAction(event: ActionEvent) {
         val window = (event.source as Control).scene.window
-        activeData = prepareUploadService.handleUploadAction(window, titlePreview, descriptionPreview, placeholderTable)
+        activeData = prepareUploadService.handleUploadAction(window, titlePreview, descriptionPreview, placeholderTable, tagsPreview)
     }
 
     @FXML
-    private fun handleUploadStartAction(event: ActionEvent) {
-        uploadService.beginUpload(activeData, placeholderTable.items)
-    }
+    private fun handleUploadStartAction(event: ActionEvent) =
+            uploadService.beginUpload(activeData, placeholderTable.items, uploadProgress)
 
     @FXML
     private fun handlePlaceholderUpdate(event: CellEditEvent<Placeholder, String>) =

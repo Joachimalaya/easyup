@@ -15,6 +15,9 @@ import javafx.scene.control.ButtonType
 import java.io.File
 import java.io.InputStreamReader
 
+/**
+ * Prepares interaction with YouTube by establishing an authorized connection.
+ */
 object Authorization {
 
     private val authDirectory = File(appDirectory.toString() + "/auth")
@@ -32,15 +35,19 @@ object Authorization {
             throw RuntimeException("Could not find $clientId, necessary to connect to YouTube.\nYou can create credential files using Google APIs.\nWill now terminate.")
         }
 
-        val clientSecrets = GoogleClientSecrets.load(jsonFactory, InputStreamReader(clientId.inputStream()))
-        val datastore = FileDataStoreFactory(authDirectory).getDataStore<StoredCredential>("easyUpDatastore")
+        clientId.inputStream().use {
+            InputStreamReader(it).use {
+                val clientSecrets = GoogleClientSecrets.load(jsonFactory, it)
+                val datastore = FileDataStoreFactory(authDirectory).getDataStore<StoredCredential>("easyUpDatastore")
 
-        val flow = GoogleAuthorizationCodeFlow.Builder(httpTransport, jsonFactory, clientSecrets, scopes).setCredentialDataStore(datastore).build()
+                val flow = GoogleAuthorizationCodeFlow.Builder(httpTransport, jsonFactory, clientSecrets, scopes).setCredentialDataStore(datastore).build()
 
-        val localReceiver = LocalServerReceiver.Builder().setPort(8080).build()
+                val localReceiver = LocalServerReceiver.Builder().setPort(8080).build()
 
-        val credential = AuthorizationCodeInstalledApp(flow, localReceiver).authorize("user")
+                val credential = AuthorizationCodeInstalledApp(flow, localReceiver).authorize("user")
 
-        return YouTube.Builder(httpTransport, jsonFactory, credential).setApplicationName("easyUp").build()
+                return YouTube.Builder(httpTransport, jsonFactory, credential).setApplicationName("easyUp").build()
+            }
+        }
     }
 }
