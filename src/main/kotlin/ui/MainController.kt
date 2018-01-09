@@ -8,6 +8,7 @@ import javafx.fxml.Initializable
 import javafx.scene.control.*
 import javafx.scene.control.TableColumn.CellEditEvent
 import javafx.scene.layout.Pane
+import javafx.scene.text.Text
 import template.fill.PlaceholderUpdateService
 import template.read.PrepareUploadService
 import upload.UploadService
@@ -28,6 +29,8 @@ class MainController : Initializable {
     var thumbnailPreview: Pane = Pane()
     @FXML
     var uploadProgress: ProgressBar = ProgressBar()
+    @FXML
+    var progressText: Text = Text()
 
     private val prepareUploadService = PrepareUploadService()
     private val placeholderUpdateService = PlaceholderUpdateService()
@@ -46,7 +49,7 @@ class MainController : Initializable {
 
     @FXML
     private fun handleUploadStartAction(event: ActionEvent) =
-            uploadService.beginUpload(activeData, placeholderTable.items, uploadProgress)
+            uploadService.beginUpload(activeData, placeholderTable.items, uploadProgress, progressText)
 
     @FXML
     private fun handlePlaceholderUpdate(event: CellEditEvent<Placeholder, String>) =
