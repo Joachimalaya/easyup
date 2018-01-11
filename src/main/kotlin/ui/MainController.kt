@@ -47,6 +47,7 @@ class MainController : Initializable {
         activeData = prepareUploadService.handleUploadAction(window, titlePreview, descriptionPreview, placeholderTable, tagsPreview)
     }
 
+    // TODO: lock UI on upload
     @FXML
     private fun handleUploadStartAction(event: ActionEvent) =
             uploadService.beginUpload(activeData, placeholderTable.items, uploadProgress, progressText)

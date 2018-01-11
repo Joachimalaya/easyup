@@ -7,8 +7,8 @@ package youtube.video
  */
 enum class PrivacyStatus(val privacyStatus: String) {
 
-    PUBLIC("public"),
+    PUBLIC("PUBLIC"),
     PRIVATE("PRIVATE"),
-    UNLISTED("unlisted")
+    UNLISTED("UNLISTED")
 
 }

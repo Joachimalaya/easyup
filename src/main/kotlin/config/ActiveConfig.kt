@@ -14,13 +14,13 @@ private fun acquireDefaultConfigFile(): File {
 
 private fun loadFromDefault(): ActiveConfig {
     return if(defaultConfigFile.exists()) {
-        defaultConfigFile.inputStream().use { mapper.readValue(it, ActiveConfig::class.java) }
+        defaultConfigFile.inputStream().use { jsonMapper.readValue(it, ActiveConfig::class.java) }
     } else {
         ActiveConfig()
     }
 }
 
-private val mapper = ObjectMapper(JsonFactory())
+val jsonMapper = ObjectMapper(JsonFactory())
 val defaultConfigFile = acquireDefaultConfigFile()
 val activeConfig: ActiveConfig = loadFromDefault()
 
@@ -38,5 +38,5 @@ class ActiveConfig {
         }
     }
 
-    fun writeToDefault() = defaultConfigFile.outputStream().use { mapper.writeValue(it, this) }
+    fun writeToDefault() = defaultConfigFile.outputStream().use { jsonMapper.writeValue(it, this) }
 }
