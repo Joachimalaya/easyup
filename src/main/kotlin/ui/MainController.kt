@@ -18,19 +18,19 @@ import java.util.*
 class MainController : Initializable {
 
     @FXML
-    var titlePreview: TextField = TextField()
+    lateinit var titlePreview: TextField
     @FXML
-    var descriptionPreview: TextArea = TextArea()
+    lateinit var descriptionPreview: TextArea
     @FXML
-    var placeholderTable: TableView<Placeholder> = TableView()
+    lateinit var placeholderTable: TableView<Placeholder>
     @FXML
-    var tagsPreview: TextField = TextField()
+    lateinit var tagsPreview: TextField
     @FXML
-    var thumbnailPreview: Pane = Pane()
+    lateinit var thumbnailPreview: Pane
     @FXML
-    var uploadProgress: ProgressBar = ProgressBar()
+    lateinit var uploadProgress: ProgressBar
     @FXML
-    var progressText: Text = Text()
+    lateinit var progressText: Text
 
     private val prepareUploadService = PrepareUploadService()
     private val placeholderUpdateService = PlaceholderUpdateService()

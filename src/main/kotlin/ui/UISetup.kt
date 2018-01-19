@@ -1,7 +1,6 @@
 package ui
 
 import config.activeConfig
-import exec.appDirectory
 import javafx.application.Application
 import javafx.event.EventHandler
 import javafx.fxml.FXMLLoader

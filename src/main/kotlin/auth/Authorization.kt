@@ -24,7 +24,12 @@ object Authorization {
     private val jsonFactory = JacksonFactory()
     private val httpTransport = NetHttpTransport()
 
-    fun createAuthorizedYouTube(): YouTube {
+    private var backingConnection: YouTube? = null
+    val connection: YouTube
+        get() = getOrCreateConnection()
+
+
+    private fun createAuthorizedYouTube(): YouTube {
 
         val scopes = listOf("https://www.googleapis.com/auth/youtube.upload")
 
@@ -49,5 +54,12 @@ object Authorization {
                 return YouTube.Builder(httpTransport, jsonFactory, credential).setApplicationName("easyUp").build()
             }
         }
+    }
+
+    private fun getOrCreateConnection(): YouTube {
+        if (backingConnection == null) {
+            backingConnection = createAuthorizedYouTube()
+        }
+        return backingConnection!!
     }
 }

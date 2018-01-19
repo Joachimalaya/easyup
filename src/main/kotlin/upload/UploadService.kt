@@ -1,5 +1,6 @@
 package upload
 
+import auth.Authorization
 import com.google.api.client.googleapis.media.MediaHttpUploader
 import com.google.api.client.googleapis.media.MediaHttpUploaderProgressListener
 import com.google.api.client.http.InputStreamContent
@@ -12,7 +13,6 @@ import config.jsonMapper
 import entity.Placeholder
 import entity.UploadData
 import exec.appDirectory
-import exec.youTube
 import javafx.scene.control.ProgressBar
 import javafx.scene.text.Text
 import template.fill.replacePlaceholders
@@ -43,7 +43,7 @@ class UploadService {
             video.snippet.tags = uploadData.tags.asList()
             uploadData.videoFile.inputStream().use {
                 val mediaContent = InputStreamContent("video/*", it)
-                val videoInsert = youTube.videos().insert("snippet,statistics,status", video, mediaContent)
+                val videoInsert = Authorization.connection.videos().insert("snippet,statistics,status", video, mediaContent)
                 val uploader = videoInsert.mediaHttpUploader
                 uploader.isDirectUploadEnabled = false
                 val stopwatch = Stopwatch.createUnstarted()
@@ -77,7 +77,7 @@ class UploadService {
                 // add thumbnailFile
                 if (uploadData.thumbnailFile != null) {
                     uploadData.thumbnailFile!!.inputStream().use {
-                        val thumbnailSet = youTube.thumbnails().set(returnedVideo.id, InputStreamContent("image/png", it))
+                        val thumbnailSet = Authorization.connection.thumbnails().set(returnedVideo.id, InputStreamContent("image/png", it))
                         thumbnailSet.mediaHttpUploader.isDirectUploadEnabled = false
                         thumbnailSet.mediaHttpUploader.progressListener = MediaHttpUploaderProgressListener {
                             // TODO: implement simple notification
