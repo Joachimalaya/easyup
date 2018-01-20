@@ -5,10 +5,12 @@ import config.activeConfig
 import entity.Placeholder
 import entity.UploadData
 import entity.UploadDataTemplate
+import javafx.scene.canvas.Canvas
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.scene.control.TableView
 import javafx.scene.control.TextInputControl
+import javafx.scene.image.Image
 import javafx.stage.FileChooser
 import javafx.stage.Window
 import org.codehaus.jackson.JsonFactory
@@ -23,7 +25,7 @@ val formatPattern = Pattern.compile("\\{(\\w*)}")!!
  */
 class PrepareUploadService {
 
-    fun handleUploadAction(window: Window, titlePreview: TextInputControl, descriptionPreview: TextInputControl, placeholderTable: TableView<Placeholder>, tagsPreview: TextInputControl): UploadData {
+    fun handleUploadAction(window: Window, titlePreview: TextInputControl, descriptionPreview: TextInputControl, placeholderTable: TableView<Placeholder>, tagsPreview: TextInputControl, thumbnailCanvas: Canvas): UploadData {
         val videoFile = askForVideoFile(window)
         val template = askForTemplate(window)
         val thumbnailFile = askForThumbnail(window)
@@ -31,6 +33,10 @@ class PrepareUploadService {
         if (videoFile == null || template == null) {
             Alert(Alert.AlertType.ERROR, "You need to provide both a video file and a template.", ButtonType.OK).showAndWait()
             return UploadData()
+        }
+
+        if (thumbnailFile != null) {
+            thumbnailCanvas.graphicsContext2D.drawImage(Image(thumbnailFile.absoluteFile.toString()), 0.0, 0.0)
         }
 
         titlePreview.text = template.titleTemplate

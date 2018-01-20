@@ -5,9 +5,9 @@ import entity.UploadData
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
+import javafx.scene.canvas.Canvas
 import javafx.scene.control.*
 import javafx.scene.control.TableColumn.CellEditEvent
-import javafx.scene.layout.Pane
 import javafx.scene.text.Text
 import template.fill.PlaceholderUpdateService
 import template.read.PrepareUploadService
@@ -26,11 +26,11 @@ class MainController : Initializable {
     @FXML
     lateinit var tagsPreview: TextField
     @FXML
-    lateinit var thumbnailPreview: Pane
-    @FXML
     lateinit var uploadProgress: ProgressBar
     @FXML
     lateinit var progressText: Text
+    @FXML
+    lateinit var thumbnailCanvas: Canvas
 
     private val prepareUploadService = PrepareUploadService()
     private val placeholderUpdateService = PlaceholderUpdateService()
@@ -44,7 +44,7 @@ class MainController : Initializable {
     @FXML
     private fun handlePrepareAction(event: ActionEvent) {
         val window = (event.source as Control).scene.window
-        activeData = prepareUploadService.handleUploadAction(window, titlePreview, descriptionPreview, placeholderTable, tagsPreview)
+        activeData = prepareUploadService.handleUploadAction(window, titlePreview, descriptionPreview, placeholderTable, tagsPreview, thumbnailCanvas)
     }
 
     // TODO: lock UI on upload
