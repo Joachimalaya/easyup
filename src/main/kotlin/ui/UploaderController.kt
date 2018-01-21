@@ -4,18 +4,32 @@ import entity.Placeholder
 import entity.UploadData
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
+import javafx.fxml.FXMLLoader
 import javafx.fxml.Initializable
+import javafx.scene.Scene
 import javafx.scene.canvas.Canvas
 import javafx.scene.control.*
 import javafx.scene.control.TableColumn.CellEditEvent
+import javafx.scene.layout.Pane
 import javafx.scene.text.Text
+import javafx.stage.Modality
+import javafx.stage.Stage
 import template.fill.PlaceholderUpdateService
 import template.read.PrepareUploadService
 import upload.UploadService
 import java.net.URL
 import java.util.*
 
-class MainController : Initializable {
+
+class UploaderController : Initializable {
+
+    @FXML
+    lateinit var prepareButton: Button
+    @FXML
+    lateinit var startButton: Button
+
+    @FXML
+    lateinit var pane: Pane
 
     @FXML
     lateinit var titlePreview: TextField
@@ -43,16 +57,39 @@ class MainController : Initializable {
 
     @FXML
     private fun handlePrepareAction(event: ActionEvent) {
-        val window = (event.source as Control).scene.window
+        val window = pane.scene.window
         activeData = prepareUploadService.handleUploadAction(window, titlePreview, descriptionPreview, placeholderTable, tagsPreview, thumbnailCanvas)
     }
 
     // TODO: lock UI on upload
     @FXML
-    private fun handleUploadStartAction(event: ActionEvent) =
-            uploadService.beginUpload(activeData, placeholderTable.items, uploadProgress, progressText)
+    private fun handleUploadStartAction(event: ActionEvent) {
+        lockUI()
+        uploadService.beginUpload(activeData, placeholderTable.items, uploadProgress, progressText)
+    }
 
     @FXML
     private fun handlePlaceholderUpdate(event: CellEditEvent<Placeholder, String>) =
             placeholderUpdateService.updatePlaceholders(event, titlePreview, descriptionPreview, activeData)
+
+    private fun lockUI() {
+        placeholderTable.isDisable = true
+        prepareButton.isDisable = true
+        startButton.isDisable = true
+    }
+
+    @FXML
+    private fun handleTemplateOpen(event: ActionEvent) {
+        val templateEditor = Stage()
+        val scene = Scene(FXMLLoader.load(javaClass.getResource("TemplateEditor.fxml")))
+        scene.stylesheets.add(javaClass.getResource("application.css").toExternalForm())
+        templateEditor.scene = scene
+        templateEditor.minWidth = 720.0
+        templateEditor.minHeight = 640.0
+
+        templateEditor.initOwner(pane.scene.window)
+        templateEditor.initModality(Modality.APPLICATION_MODAL)
+        templateEditor.showAndWait()
+    }
+
 }

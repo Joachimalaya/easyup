@@ -10,7 +10,7 @@ import javafx.stage.Stage
 
 class UISetup : Application() {
 
-    private val layoutPath = "MainLayout.fxml"
+    private val layoutPath = "Uploader.fxml"
     private val cssConfig = "application.css"
 
     override fun start(primaryStage: Stage) {
