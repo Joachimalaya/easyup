@@ -61,7 +61,6 @@ class UploaderController : Initializable {
         activeData = prepareUploadService.handleUploadAction(window, titlePreview, descriptionPreview, placeholderTable, tagsPreview, thumbnailCanvas)
     }
 
-    // TODO: lock UI on upload
     @FXML
     private fun handleUploadStartAction(event: ActionEvent) {
         lockUI()
@@ -84,8 +83,7 @@ class UploaderController : Initializable {
         val scene = Scene(FXMLLoader.load(javaClass.getResource("TemplateEditor.fxml")))
         scene.stylesheets.add(javaClass.getResource("application.css").toExternalForm())
         templateEditor.scene = scene
-        templateEditor.minWidth = 720.0
-        templateEditor.minHeight = 640.0
+        templateEditor.title = "easyUp Template Editor"
 
         templateEditor.initOwner(pane.scene.window)
         templateEditor.initModality(Modality.APPLICATION_MODAL)

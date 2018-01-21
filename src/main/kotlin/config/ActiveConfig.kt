@@ -22,7 +22,7 @@ private fun loadFromDefault(): ActiveConfig {
 
 val jsonMapper = ObjectMapper(JsonFactory())
 val defaultConfigFile = acquireDefaultConfigFile()
-val activeConfig: ActiveConfig = loadFromDefault()
+val activeConfig = loadFromDefault()
 
 class ActiveConfig {
 

@@ -29,58 +29,62 @@
                 <Insets top="5" bottom="5" right="5" left="5"/>
             </padding>
 
-            <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.rowIndex="1">
-                <children>
-                    <Button fx:id="prepareButton" maxWidth="Infinity" onAction="#handlePrepareAction"
-                            text="Prepare new upload"/>
-                    <Button fx:id="startButton" maxWidth="Infinity" onAction="#handleUploadStartAction"
-                            text="Start upload"/>
-                </children>
+            <children>
+                <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.rowIndex="1">
+                    <children>
+                        <Button fx:id="prepareButton" maxWidth="Infinity" onAction="#handlePrepareAction"
+                                text="Prepare new upload"/>
+                        <Button fx:id="startButton" maxWidth="Infinity" onAction="#handleUploadStartAction"
+                                text="Start upload"/>
+                    </children>
 
-            </VBox>
-            <TableView fx:id="placeholderTable" disable="true" editable="true" GridPane.columnIndex="1"
-                       GridPane.columnSpan="2" GridPane.rowIndex="1">
-                <columns>
-                    <TableColumn prefWidth="${placeholderTable.width*0.3}" text="Key">
-                        <cellValueFactory>
-                            <PropertyValueFactory property="key"/>
-                        </cellValueFactory>
-                    </TableColumn>
-                    <TableColumn onEditCancel="#handlePlaceholderUpdate" onEditCommit="#handlePlaceholderUpdate"
-                                 prefWidth="${placeholderTable.width*0.7}" text="Value">
-                        <cellValueFactory>
-                            <PropertyValueFactory property="value"/>
-                        </cellValueFactory>
-                        <cellFactory>
-                            <TextFieldTableCell fx:factory="forTableColumn"/>
-                        </cellFactory>
-                    </TableColumn>
-                </columns>
-                <items>
-                    <FXCollections fx:factory="observableArrayList"/>
-                </items>
-            </TableView>
+                </VBox>
+                <TableView fx:id="placeholderTable" disable="true" editable="true" GridPane.columnIndex="1"
+                           GridPane.columnSpan="2" GridPane.rowIndex="1">
+                    <columns>
+                        <TableColumn prefWidth="${placeholderTable.width*0.3}" text="Key">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="key"/>
+                            </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn onEditCancel="#handlePlaceholderUpdate" onEditCommit="#handlePlaceholderUpdate"
+                                     prefWidth="${placeholderTable.width*0.7}" text="Value">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="value"/>
+                            </cellValueFactory>
+                            <cellFactory>
+                                <TextFieldTableCell fx:factory="forTableColumn"/>
+                            </cellFactory>
+                        </TableColumn>
+                    </columns>
+                    <items>
+                        <FXCollections fx:factory="observableArrayList"/>
+                    </items>
+                </TableView>
 
-            <Text text="Title" GridPane.rowIndex="2" GridPane.valignment="TOP"/>
-            <TextField fx:id="titlePreview" disable="true" editable="false" GridPane.columnIndex="1"
-                       GridPane.columnSpan="2" GridPane.rowIndex="2"/>
+                <Text text="Title" GridPane.rowIndex="2" GridPane.valignment="TOP"/>
+                <TextField fx:id="titlePreview" disable="true" editable="false" GridPane.columnIndex="1"
+                           GridPane.columnSpan="2" GridPane.rowIndex="2"/>
 
-            <Text text="Description" GridPane.rowIndex="3" GridPane.valignment="TOP"/>
-            <TextArea fx:id="descriptionPreview" disable="true" editable="false" wrapText="true"
-                      GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3"/>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tags" GridPane.rowIndex="4"/>
-            <TextField fx:id="tagsPreview" disable="true" editable="false" prefWidth="205.0" GridPane.columnIndex="1"
-                       GridPane.columnSpan="2" GridPane.rowIndex="4"/>
+                <Text text="Description" GridPane.rowIndex="3" GridPane.valignment="TOP"/>
+                <TextArea fx:id="descriptionPreview" disable="true" editable="false" wrapText="true"
+                          GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3"/>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tags" GridPane.rowIndex="4"/>
+                <TextField fx:id="tagsPreview" disable="true" editable="false" prefWidth="205.0"
+                           GridPane.columnIndex="1"
+                           GridPane.columnSpan="2" GridPane.rowIndex="4"/>
 
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Thumbnail" GridPane.rowIndex="5"
-                  GridPane.valignment="TOP"/>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Thumbnail" GridPane.rowIndex="5"
+                      GridPane.valignment="TOP"/>
 
-            <ProgressBar fx:id="uploadProgress" prefWidth="200.0" progress="0.0" GridPane.columnIndex="1"
-                         GridPane.rowIndex="6"/>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Upload Progress" GridPane.rowIndex="6"/>
-            <Text fx:id="progressText" text="0%" GridPane.columnIndex="2" GridPane.rowIndex="6"/>
+                <ProgressBar fx:id="uploadProgress" prefWidth="200.0" progress="0.0" GridPane.columnIndex="1"
+                             GridPane.rowIndex="6"/>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Upload Progress" GridPane.rowIndex="6"/>
+                <Text fx:id="progressText" text="0%" GridPane.columnIndex="2" GridPane.rowIndex="6"/>
 
-            <Canvas fx:id="thumbnailCanvas" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5"/>
+                <Canvas fx:id="thumbnailCanvas" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5"/>
+            </children>
+
 
             <columnConstraints>
                 <ColumnConstraints hgrow="NEVER" minWidth="150.0" prefWidth="100.0"/>  <!-- 0 -->
