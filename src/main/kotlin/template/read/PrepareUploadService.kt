@@ -34,9 +34,7 @@ class PrepareUploadService {
             return UploadData()
         }
 
-        if (thumbnailFile != null) {
-            thumbnailCanvas.graphicsContext2D.drawImage(Image(thumbnailFile.absoluteFile.toString()), 0.0, 0.0)
-        }
+        thumbnailFile?.inputStream()?.use { thumbnailCanvas.graphicsContext2D.drawImage(Image(it), 0.0, 0.0) }
 
         titlePreview.text = template.titleTemplate
         descriptionPreview.text = template.descriptionTemplate
