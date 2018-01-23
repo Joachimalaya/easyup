@@ -1,5 +1,6 @@
 package ui
 
+import config.activeConfig
 import config.jsonMapper
 import entity.UploadDataTemplate
 import javafx.event.ActionEvent
@@ -17,7 +18,7 @@ import java.util.*
 class TemplateEditorController : Initializable {
 
     @FXML
-    lateinit var pane: Pane
+    lateinit var rootPane: Pane
 
     @FXML
     lateinit var titleInput: TextField
@@ -34,7 +35,7 @@ class TemplateEditorController : Initializable {
         val answer = Alert(Alert.AlertType.INFORMATION, "Loading a template will discard all unsaved changes.\nAre you sure you want to load a template file?", ButtonType.YES, ButtonType.NO).showAndWait()
         if (answer.isPresent && answer.get() == ButtonType.YES) {
             val chooser = FileChooser()
-            val targetFile = chooser.showOpenDialog(pane.scene.window)
+            val targetFile = chooser.showOpenDialog(rootPane.scene.window)
 
             targetFile.inputStream().use {
                 val template = jsonMapper.readValue(it, UploadDataTemplate::class.java)
@@ -42,17 +43,19 @@ class TemplateEditorController : Initializable {
                 descriptionInput.text = template.descriptionTemplate
                 tagsInput.text = template.tags.joinToString(", ")
             }
+            activeConfig.updateLastVisitedDirectory(targetFile)
         }
     }
 
     fun handleSave(actionEvent: ActionEvent) {
         val chooser = FileChooser()
 
-        val targetFile = chooser.showSaveDialog(pane.scene.window)
+        val targetFile = chooser.showSaveDialog(rootPane.scene.window)
         if (targetFile != null) {
             val tags = tagsInput.text.split(",").map { it.trim() }.toTypedArray()
             val template = UploadDataTemplate(titleInput.text, descriptionInput.text, "", tags)
             targetFile.outputStream().use { jsonMapper.writeValue(it, template) }
+            activeConfig.updateLastVisitedDirectory(targetFile)
         }
 
     }

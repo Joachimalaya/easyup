@@ -2,6 +2,7 @@ package template.read
 
 import com.google.common.collect.Lists
 import config.activeConfig
+import config.jsonMapper
 import entity.Placeholder
 import entity.UploadData
 import entity.UploadDataTemplate
@@ -13,8 +14,6 @@ import javafx.scene.control.TextInputControl
 import javafx.scene.image.Image
 import javafx.stage.FileChooser
 import javafx.stage.Window
-import org.codehaus.jackson.JsonFactory
-import org.codehaus.jackson.map.ObjectMapper
 import java.io.File
 import java.util.regex.Pattern
 
@@ -65,7 +64,6 @@ class PrepareUploadService {
         return placeholderList
     }
 
-
     private fun askForVideoFile(window: Window): File? {
         val chooser = FileChooser()
         chooser.initialDirectory = activeConfig.lastVisitedDirectory
@@ -87,8 +85,7 @@ class PrepareUploadService {
         val templateFile = chooser.showOpenDialog(window)
         activeConfig.updateLastVisitedDirectory(templateFile)
         return if (templateFile != null) {
-            val mapper = ObjectMapper(JsonFactory())
-            mapper.readValue(templateFile, UploadDataTemplate::class.java)
+            jsonMapper.readValue(templateFile, UploadDataTemplate::class.java)
         } else {
             null
         }

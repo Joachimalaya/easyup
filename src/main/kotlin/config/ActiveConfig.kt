@@ -27,6 +27,13 @@ val activeConfig = loadFromDefault()
 class ActiveConfig {
 
     var lastVisitedDirectory = appDirectory
+        get() {
+            if (!field.exists() || !field.isDirectory) {
+                field = appDirectory
+            }
+            return field
+        }
+        private set
 
     fun updateLastVisitedDirectory(selected: File?) {
         if (selected == null) {

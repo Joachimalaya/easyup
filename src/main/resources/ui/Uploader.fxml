@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="ui.UploaderController">
+            fx:controller="ui.UploaderController" fx:id="rootPane">
     <top>
 
         <MenuBar BorderPane.alignment="CENTER">
@@ -23,7 +23,7 @@
         </MenuBar>
     </top>
     <center>
-        <GridPane fx:id="pane" hgap="5" styleClass="root" vgap="5">
+        <GridPane hgap="5" styleClass="root" vgap="5">
 
             <padding>
                 <Insets top="5" bottom="5" right="5" left="5"/>

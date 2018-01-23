@@ -29,7 +29,7 @@ class UploaderController : Initializable {
     lateinit var startButton: Button
 
     @FXML
-    lateinit var pane: Pane
+    lateinit var rootPane: Pane
 
     @FXML
     lateinit var titlePreview: TextField
@@ -57,7 +57,7 @@ class UploaderController : Initializable {
 
     @FXML
     private fun handlePrepareAction(event: ActionEvent) {
-        val window = pane.scene.window
+        val window = rootPane.scene.window
         activeData = prepareUploadService.handleUploadAction(window, titlePreview, descriptionPreview, placeholderTable, tagsPreview, thumbnailCanvas)
     }
 
@@ -85,7 +85,7 @@ class UploaderController : Initializable {
         templateEditor.scene = scene
         templateEditor.title = "easyUp Template Editor"
 
-        templateEditor.initOwner(pane.scene.window)
+        templateEditor.initOwner(rootPane.scene.window)
         templateEditor.initModality(Modality.APPLICATION_MODAL)
         templateEditor.showAndWait()
     }
