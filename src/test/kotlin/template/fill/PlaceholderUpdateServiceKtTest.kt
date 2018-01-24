@@ -20,6 +20,7 @@ class PlaceholderUpdateServiceKtTest {
         // assert
         assertTrue("unused placeholder should not be inserted", !result.contains(unusedPlaceholder.value))
         assertTrue("correct placeholder needs to be inserted", result.contains(toFill.value))
+        assertTrue("invalid placeholder must remain in the result", result.contains("{notToFill"))
         assertTrue("placeholder with special characters must be inserted correctly", result.contains(specialCharacters.value) && !result.contains("{äöüßé_ #/}"))
     }
 }

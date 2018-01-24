@@ -6,12 +6,12 @@ import config.jsonMapper
 import entity.Placeholder
 import entity.UploadData
 import entity.UploadDataTemplate
-import javafx.scene.canvas.Canvas
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.scene.control.TableView
 import javafx.scene.control.TextInputControl
 import javafx.scene.image.Image
+import javafx.scene.image.ImageView
 import javafx.stage.FileChooser
 import javafx.stage.Window
 import java.io.File
@@ -24,7 +24,7 @@ val formatPattern = Pattern.compile("\\{(\\w*)}")!!
  */
 class PrepareUploadService {
 
-    fun handleUploadAction(window: Window, titlePreview: TextInputControl, descriptionPreview: TextInputControl, placeholderTable: TableView<Placeholder>, tagsPreview: TextInputControl, thumbnailCanvas: Canvas): UploadData {
+    fun handleUploadAction(window: Window, titlePreview: TextInputControl, descriptionPreview: TextInputControl, placeholderTable: TableView<Placeholder>, tagsPreview: TextInputControl, thumbnailPreview: ImageView): UploadData {
         val videoFile = askForVideoFile(window)
         val template = askForTemplate(window)
         val thumbnailFile = askForThumbnail(window)
@@ -34,7 +34,7 @@ class PrepareUploadService {
             return UploadData()
         }
 
-        thumbnailFile?.inputStream()?.use { thumbnailCanvas.graphicsContext2D.drawImage(Image(it), 0.0, 0.0) }
+        thumbnailFile?.inputStream()?.use { thumbnailPreview.image = Image(it) }
 
         titlePreview.text = template.titleTemplate
         descriptionPreview.text = template.descriptionTemplate

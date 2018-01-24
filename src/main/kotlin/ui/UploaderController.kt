@@ -7,9 +7,9 @@ import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.fxml.Initializable
 import javafx.scene.Scene
-import javafx.scene.canvas.Canvas
 import javafx.scene.control.*
 import javafx.scene.control.TableColumn.CellEditEvent
+import javafx.scene.image.ImageView
 import javafx.scene.layout.Pane
 import javafx.scene.text.Text
 import javafx.stage.Modality
@@ -44,7 +44,7 @@ class UploaderController : Initializable {
     @FXML
     lateinit var progressText: Text
     @FXML
-    lateinit var thumbnailCanvas: Canvas
+    lateinit var thumbnailPreview: ImageView
 
     private val prepareUploadService = PrepareUploadService()
     private val placeholderUpdateService = PlaceholderUpdateService()
@@ -52,13 +52,13 @@ class UploaderController : Initializable {
     private var activeData = UploadData()
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
-        // NOP
+        // TODO: load data of incomplete upload if existing
     }
 
     @FXML
     private fun handlePrepareAction(event: ActionEvent) {
         val window = rootPane.scene.window
-        activeData = prepareUploadService.handleUploadAction(window, titlePreview, descriptionPreview, placeholderTable, tagsPreview, thumbnailCanvas)
+        activeData = prepareUploadService.handleUploadAction(window, titlePreview, descriptionPreview, placeholderTable, tagsPreview, thumbnailPreview)
     }
 
     @FXML
