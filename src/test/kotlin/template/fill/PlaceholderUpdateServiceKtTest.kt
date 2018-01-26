@@ -15,7 +15,7 @@ class PlaceholderUpdateServiceKtTest {
         val specialCharacters = Placeholder("äöüßé_ #/", "äöüßé_ #/")
 
         // run
-        val result = replacePlaceholders(template, listOf(unusedPlaceholder, toFill, specialCharacters))
+        val result = PlaceholderUpdateService.replacePlaceholders(template, listOf(unusedPlaceholder, toFill, specialCharacters))
 
         // assert
         assertTrue("unused placeholder should not be inserted", !result.contains(unusedPlaceholder.value))

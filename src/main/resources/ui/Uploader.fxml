@@ -46,7 +46,7 @@
                                 <PropertyValueFactory property="key"/>
                             </cellValueFactory>
                         </TableColumn>
-                        <TableColumn onEditCancel="#handlePlaceholderUpdate" onEditCommit="#handlePlaceholderUpdate"
+                        <TableColumn onEditCommit="#handlePlaceholderUpdate"
                                      prefWidth="${placeholderTable.width*0.7}" text="Value">
                             <cellValueFactory>
                                 <PropertyValueFactory property="value"/>

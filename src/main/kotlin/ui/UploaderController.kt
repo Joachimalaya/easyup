@@ -14,9 +14,10 @@ import javafx.scene.layout.Pane
 import javafx.scene.text.Text
 import javafx.stage.Modality
 import javafx.stage.Stage
-import template.fill.PlaceholderUpdateService
-import template.read.PrepareUploadService
-import upload.UploadService
+import template.fill.PlaceholderUpdateService.updatePlaceholders
+import template.read.PrepareUploadService.handleLoadAction
+import upload.UploadService.beginUpload
+import upload.resumable.UnfinishedUploadLoadService.loadUnfinishedUpload
 import java.net.URL
 import java.util.*
 
@@ -46,30 +47,28 @@ class UploaderController : Initializable {
     @FXML
     lateinit var thumbnailPreview: ImageView
 
-    private val prepareUploadService = PrepareUploadService()
-    private val placeholderUpdateService = PlaceholderUpdateService()
-    private val uploadService = UploadService()
     private var activeData = UploadData()
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
-        // TODO: load data of incomplete upload if existing
+        // load data of incomplete upload if existing
+        activeData = loadUnfinishedUpload(titlePreview, descriptionPreview, tagsPreview, thumbnailPreview)
     }
 
     @FXML
     private fun handlePrepareAction(event: ActionEvent) {
         val window = rootPane.scene.window
-        activeData = prepareUploadService.handleUploadAction(window, titlePreview, descriptionPreview, placeholderTable, tagsPreview, thumbnailPreview)
+        activeData = handleLoadAction(window, titlePreview, descriptionPreview, placeholderTable, tagsPreview, thumbnailPreview)
     }
 
     @FXML
     private fun handleUploadStartAction(event: ActionEvent) {
         lockUI()
-        uploadService.beginUpload(activeData, placeholderTable.items, uploadProgress, progressText)
+        beginUpload(activeData, placeholderTable.items, uploadProgress, progressText)
     }
 
     @FXML
     private fun handlePlaceholderUpdate(event: CellEditEvent<Placeholder, String>) =
-            placeholderUpdateService.updatePlaceholders(event, titlePreview, descriptionPreview, activeData)
+            updatePlaceholders(event, titlePreview, descriptionPreview, activeData)
 
     private fun lockUI() {
         placeholderTable.isDisable = true

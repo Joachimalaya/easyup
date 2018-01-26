@@ -12,10 +12,10 @@ import com.google.common.io.Files
 import config.jsonMapper
 import entity.Placeholder
 import entity.UploadData
-import exec.appDirectory
 import javafx.scene.control.ProgressBar
 import javafx.scene.text.Text
-import template.fill.replacePlaceholders
+import template.fill.PlaceholderUpdateService.replacePlaceholders
+import upload.resumable.unfinishedUploadDirectory
 import youtube.video.PrivacyStatus
 import java.io.File
 import java.time.Duration
@@ -26,7 +26,7 @@ import kotlin.math.roundToLong
 /**
  * Handles the actual upload of data to YouTube by calling the API.
  */
-class UploadService {
+object UploadService {
 
     fun beginUpload(uploadData: UploadData, placeholders: List<Placeholder>, progressBar: ProgressBar, progressText: Text) {
         // started in new Thread to prevent UI hang
@@ -98,7 +98,7 @@ class UploadService {
     }
 
     private fun getUploadDataFile(): File {
-        val uploadDataFile = File("$appDirectory/uploads/${UUID.randomUUID()}.json")
+        val uploadDataFile = File("$unfinishedUploadDirectory/${UUID.randomUUID()}.json")
         Files.createParentDirs(uploadDataFile)
         return uploadDataFile
     }

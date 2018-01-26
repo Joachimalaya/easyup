@@ -22,9 +22,9 @@ val formatPattern = Pattern.compile("\\{(\\w*)}")!!
 /**
  * Asks the user for input files. These will then be parsed and prepared for upload.
  */
-class PrepareUploadService {
+object PrepareUploadService {
 
-    fun handleUploadAction(window: Window, titlePreview: TextInputControl, descriptionPreview: TextInputControl, placeholderTable: TableView<Placeholder>, tagsPreview: TextInputControl, thumbnailPreview: ImageView): UploadData {
+    fun handleLoadAction(window: Window, titlePreview: TextInputControl, descriptionPreview: TextInputControl, placeholderTable: TableView<Placeholder>, tagsPreview: TextInputControl, thumbnailPreview: ImageView): UploadData {
         val videoFile = askForVideoFile(window)
         val template = askForTemplate(window)
         val thumbnailFile = askForThumbnail(window)
