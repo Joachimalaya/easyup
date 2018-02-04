@@ -6,10 +6,10 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
-<?import javafx.scene.control.cell.TextFieldTableCell?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import ui.control.AutoCommitCellFactory?>
 <BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="ui.UploaderController">
     <top>
@@ -52,7 +52,7 @@
                                 <PropertyValueFactory property="value"/>
                             </cellValueFactory>
                             <cellFactory>
-                                <TextFieldTableCell fx:factory="forTableColumn"/>
+                                <AutoCommitCellFactory/>
                             </cellFactory>
                         </TableColumn>
                     </columns>
