@@ -67,6 +67,8 @@ object PrepareUploadService {
         chooser.initialDirectory = activeConfig.lastVisitedDirectory
         chooser.title = "Select video to upload"
 
+        chooser.extensionFilters.addAll(supportedVideoFormats + allFilesFilter)
+
         val videoFile = chooser.showOpenDialog(window)
         activeConfig.updateLastVisitedDirectory(videoFile)
         return videoFile
@@ -93,12 +95,22 @@ object PrepareUploadService {
         val chooser = FileChooser()
         chooser.initialDirectory = activeConfig.lastVisitedDirectory
         chooser.title = "Select a thumbnail"
-        chooser.extensionFilters.addAll(//
-                FileChooser.ExtensionFilter("PNG", "*.png"), //
-                FileChooser.ExtensionFilter("all files", "*.*"))
+        chooser.extensionFilters.addAll(supportedThumbnailFormats + allFilesFilter)
 
         val thumbnailFile = chooser.showOpenDialog(window)
         activeConfig.updateLastVisitedDirectory(thumbnailFile)
         return thumbnailFile
     }
+
+    private val supportedVideoFormats = listOf(FileChooser.ExtensionFilter("QuickTime Movie", "*.mov"),
+            FileChooser.ExtensionFilter("MP4", "*.mp4", "*.mpeg4"),
+            FileChooser.ExtensionFilter("Audio Video Interleaved", "*.avi"),
+            FileChooser.ExtensionFilter("Windows Media Video", "*.wmv"),
+            FileChooser.ExtensionFilter("Flash Video", "*.flv"))
+
+    private val supportedThumbnailFormats = listOf(FileChooser.ExtensionFilter("PNG", "*.png"))
+
+    private val allFilesFilter = FileChooser.ExtensionFilter("all files", "*.*")
+
+
 }
