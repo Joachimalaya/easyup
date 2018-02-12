@@ -7,6 +7,7 @@ import exec.appDirectory
 import javafx.scene.control.*
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
+import template.fill.PlaceholderUpdateService
 import ui.alert.SizedAlert
 import java.io.File
 
@@ -25,8 +26,8 @@ object UnfinishedUploadLoadService {
             val wait = retryAlert.showAndWait()
             if (wait.isPresent && wait.get() == ButtonType.YES) {
                 val unfinishedData = unfinishedUpload.inputStream().use { jsonMapper.readValue(it, RestorableUpload::class.java) }
-                titlePreview.text = unfinishedData.title
-                descriptionPreview.text = unfinishedData.description
+                titlePreview.text = PlaceholderUpdateService.replacePlaceholders(unfinishedData.title, unfinishedData.placeholders)
+                descriptionPreview.text = PlaceholderUpdateService.replacePlaceholders(unfinishedData.description, unfinishedData.placeholders)
                 tags.text = unfinishedData.tags.joinToString(", ")
 
                 unfinishedData.thumbnailFile?.inputStream()?.use { thumbnailPreview.image = Image(it) }
@@ -34,6 +35,11 @@ object UnfinishedUploadLoadService {
                 placeholderTable.items.addAll(unfinishedData.placeholders)
 
                 deleteUnfinishedUpload(unfinishedUpload)
+
+                titlePreview.isDisable = false
+                descriptionPreview.isDisable = false
+                placeholderTable.isDisable = false
+                tags.isDisable = false
 
                 return unfinishedData
             }
