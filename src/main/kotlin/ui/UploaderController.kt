@@ -51,7 +51,7 @@ class UploaderController : Initializable {
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         // load data of incomplete upload if existing
-        activeData = loadUnfinishedUpload(titlePreview, descriptionPreview, tagsPreview, thumbnailPreview)
+        activeData = loadUnfinishedUpload(titlePreview, descriptionPreview, tagsPreview, thumbnailPreview, placeholderTable)
     }
 
     @FXML

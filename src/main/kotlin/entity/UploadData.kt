@@ -4,7 +4,7 @@ import exec.appDirectory
 import java.io.File
 import java.util.*
 
-data class UploadData(var title: String, var description: String, var game: String, var tags: Array<String>, var videoFile: File, var thumbnailFile: File?) {
+open class UploadData(var title: String, var description: String, var game: String, var tags: Array<String>, var videoFile: File, var thumbnailFile: File?) {
 
     constructor(template: UploadDataTemplate, videoFile: File, thumbnailFile: File?) : this(template.titleTemplate, template.descriptionTemplate, template.game, template.tags, videoFile, thumbnailFile)
 

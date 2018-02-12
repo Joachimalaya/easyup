@@ -15,6 +15,7 @@ import entity.UploadData
 import javafx.scene.control.ProgressBar
 import javafx.scene.text.Text
 import template.fill.PlaceholderUpdateService.replacePlaceholders
+import upload.resumable.RestorableUpload
 import upload.resumable.unfinishedUploadDirectory
 import youtube.video.PrivacyStatus
 import java.io.File
@@ -28,9 +29,14 @@ import kotlin.math.roundToLong
  */
 object UploadService {
 
+    var cancelUpload = false
+
     fun beginUpload(uploadData: UploadData, placeholders: List<Placeholder>, progressBar: ProgressBar, progressText: Text) {
         // started in new Thread to prevent UI hang
         Thread {
+            val uploadPersistenceFile = getUploadDataFile()
+            uploadPersistenceFile.outputStream().use { jsonMapper.writeValue(it, RestorableUpload(placeholders, uploadData)) }
+
             val video = Video()
 
             video.status = VideoStatus()
@@ -43,21 +49,23 @@ object UploadService {
             video.snippet.tags = uploadData.tags.asList()
             uploadData.videoFile.inputStream().use {
                 val mediaContent = InputStreamContent("video/*", it)
+                mediaContent.setRetrySupported(true)
                 val videoInsert = Authorization.connection.videos().insert("snippet,statistics,status", video, mediaContent)
                 val uploader = videoInsert.mediaHttpUploader
                 uploader.isDirectUploadEnabled = false
                 val stopwatch = Stopwatch.createUnstarted()
-                val uploadPersistenceFile = getUploadDataFile()
+
                 uploader.progressListener = MediaHttpUploaderProgressListener {
+                    if (cancelUpload) {
+                        throw RuntimeException("termination of upload thread requested")
+                    }
                     when (it.uploadState!!) {
                         MediaHttpUploader.UploadState.NOT_STARTED ->
                             progressText.text = "starting..."
                         MediaHttpUploader.UploadState.INITIATION_STARTED ->
                             progressText.text = "initiating upload..."
-                        MediaHttpUploader.UploadState.INITIATION_COMPLETE -> {
-                            uploadPersistenceFile.outputStream().use { jsonMapper.writeValue(it, uploadData) }
+                        MediaHttpUploader.UploadState.INITIATION_COMPLETE ->
                             stopwatch.start()
-                        }
                         MediaHttpUploader.UploadState.MEDIA_IN_PROGRESS -> {
                             progressBar.progress = percentageDone(it, uploadData)
                             progressText.text = progressFeedback(progressBar.progress, stopwatch.elapsed(TimeUnit.MILLISECONDS))
@@ -89,8 +97,8 @@ object UploadService {
         }.start()
     }
 
-    private fun percentageDone(it: MediaHttpUploader, uploadData: UploadData) =
-            it.numBytesUploaded.toDouble() / uploadData.videoFile.length().toDouble()
+    private fun percentageDone(uploader: MediaHttpUploader, uploadData: UploadData) =
+            uploader.numBytesUploaded.toDouble() / uploadData.videoFile.length().toDouble()
 
     fun progressFeedback(ratioDone: Double, elapsedMillis: Long): String {
         val eta = Duration.ofMillis((elapsedMillis / ratioDone - elapsedMillis).roundToLong()).seconds

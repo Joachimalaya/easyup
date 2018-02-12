@@ -9,6 +9,7 @@ import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.client.util.store.FileDataStoreFactory
 import com.google.api.services.youtube.YouTube
+import com.google.api.services.youtube.YouTubeScopes
 import exec.appDirectory
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
@@ -28,10 +29,9 @@ object Authorization {
     val connection: YouTube
         get() = getOrCreateConnection()
 
-
     private fun createAuthorizedYouTube(): YouTube {
 
-        val scopes = listOf("https://www.googleapis.com/auth/youtube.upload")
+        val scopes = YouTubeScopes.all()
 
         // check for client secret
         val clientId = File(authDirectory.toString() + "/client_id.json")
