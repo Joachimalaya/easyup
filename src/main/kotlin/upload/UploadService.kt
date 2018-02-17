@@ -17,7 +17,9 @@ import javafx.scene.text.Text
 import template.fill.PlaceholderUpdateService.replacePlaceholders
 import upload.resumable.RestorableUpload
 import upload.resumable.unfinishedUploadDirectory
+import youtube.video.ByteSize
 import youtube.video.PrivacyStatus
+import youtube.video.numBytes
 import java.io.File
 import java.time.Duration
 import java.util.*
@@ -30,6 +32,8 @@ import kotlin.math.roundToLong
 object UploadService {
 
     var cancelUpload = false
+
+    private val uploadBufferSize = numBytes(512, ByteSize.MEGABYTE)
 
     fun beginUpload(uploadData: UploadData, placeholders: List<Placeholder>, progressBar: ProgressBar, progressText: Text) {
         // started in new Thread to prevent UI hang
@@ -47,7 +51,7 @@ object UploadService {
             video.snippet.description = replacePlaceholders(uploadData.description, placeholders)
 
             video.snippet.tags = uploadData.tags.asList()
-            uploadData.videoFile.inputStream().use {
+            uploadData.videoFile.inputStream().buffered(uploadBufferSize).use {
                 val mediaContent = InputStreamContent("video/*", it)
                 mediaContent.setRetrySupported(true)
                 val videoInsert = Authorization.connection.videos().insert("snippet,statistics,status", video, mediaContent)
