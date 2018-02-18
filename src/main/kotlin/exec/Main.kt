@@ -1,6 +1,6 @@
 package exec
 
-import ui.UISetup
+import ui.MainWindow
 import java.io.File
 
 
@@ -10,5 +10,5 @@ fun main(args: Array<String>) {
     // ensure that application directory exists
     appDirectory.createNewFile()
 
-    UISetup().launchApp(args)
+    MainWindow().launchApp(args)
 }

@@ -15,6 +15,7 @@ import entity.UploadData
 import javafx.scene.control.ProgressBar
 import javafx.scene.text.Text
 import template.fill.PlaceholderUpdateService.replacePlaceholders
+import ui.MainWindow
 import upload.resumable.RestorableUpload
 import upload.resumable.unfinishedUploadDirectory
 import youtube.video.BinaryPrefix
@@ -73,7 +74,7 @@ object UploadService {
                         MediaHttpUploader.UploadState.MEDIA_IN_PROGRESS -> {
                             progressBar.progress = percentageDone(it, uploadData)
                             progressText.text = progressFeedback(progressBar.progress, stopwatch.elapsed(TimeUnit.MILLISECONDS))
-                            // TODO: write progress to window title
+                            MainWindow.INSTANCE?.changeTitle(shortProgressFeedback(progressBar.progress, stopwatch.elapsed(TimeUnit.MILLISECONDS)))
                         }
                         MediaHttpUploader.UploadState.MEDIA_COMPLETE -> {
                             progressText.text = "upload complete"
@@ -107,6 +108,11 @@ object UploadService {
     fun progressFeedback(ratioDone: Double, elapsedMillis: Long): String {
         val eta = Duration.ofMillis((elapsedMillis / ratioDone - elapsedMillis).roundToLong()).seconds
         return String.format("%02.1f%% uploaded; ETA: %d:%02d:%02d", ratioDone * 100, eta / 3600, (eta % 3600) / 60, (eta % 60))
+    }
+
+    fun shortProgressFeedback(ratioDone: Double, elapsedMillis: Long): String {
+        val eta = Duration.ofMillis((elapsedMillis / ratioDone - elapsedMillis).roundToLong()).seconds
+        return String.format("%02.0f%% %d:%02d", ratioDone * 100, eta / 3600, (eta % 3600) / 60, (eta % 60))
     }
 
     private fun getUploadDataFile(): File {

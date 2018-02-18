@@ -12,12 +12,22 @@ import javafx.stage.Stage
 import ui.alert.SizedAlert
 import upload.UploadService
 
-class UISetup : Application() {
+class MainWindow : Application() {
+
+    companion object {
+        // can't use a kotlin object, because javafx calls MainWindow()
+        var INSTANCE: MainWindow? = null
+    }
 
     private val layoutPath = "Uploader.fxml"
     private val cssConfig = "application.css"
 
+    var windowStage: Stage? = null
+
     override fun start(primaryStage: Stage) {
+        INSTANCE = this
+
+        windowStage = primaryStage
         val root = FXMLLoader.load<Parent>(javaClass.getResource(layoutPath))
         val scene = Scene(root)
         scene.stylesheets.add(javaClass.getResource(cssConfig).toExternalForm())
@@ -27,7 +37,6 @@ class UISetup : Application() {
         primaryStage.isMaximized = true
         primaryStage.show()
         primaryStage.title = "easyUp"
-
 
         primaryStage.onCloseRequest = EventHandler {
             // TODO: check whether upload is running before showing this
@@ -43,6 +52,13 @@ class UISetup : Application() {
                 it.consume()
             }
         }
+    }
+
+    /**
+     * Add some text to the usual easyUp in the title of the application
+     */
+    fun changeTitle(titleSuffix: String) {
+        windowStage?.title = "easyUp - $titleSuffix"
     }
 
     fun launchApp(args: Array<String>) {

@@ -30,7 +30,7 @@ dependencies {
 
     compile "com.google.api-client:google-api-client:1.23.0"
     compile "com.google.oauth-client:google-oauth-client-jetty:1.23.0"
-    compile "com.google.apis:google-api-services-youtube:v3-rev188-1.23.0"
+    compile "com.google.apis:google-api-services-youtube:v3-rev192-1.23.0"
 
     compile "com.fasterxml:jackson-module-json-org:0.9.1"
 

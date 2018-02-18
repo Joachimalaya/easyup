@@ -15,5 +15,12 @@ class UploadServiceTest {
         assertEquals("50${DecimalFormat().decimalFormatSymbols.decimalSeparator}0% uploaded; ETA: 0:01:00", feedback)
     }
 
+    @Test
+    fun testShortFeedback() {
+        // run
+        val shortFeedback = UploadService.shortProgressFeedback(0.5, 60000)
 
+        // assert
+        assertEquals("50% 0:01", shortFeedback)
+    }
 }
