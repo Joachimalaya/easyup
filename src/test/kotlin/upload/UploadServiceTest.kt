@@ -7,7 +7,7 @@ import java.text.DecimalFormat
 class UploadServiceTest {
 
     @Test
-    fun testprogressFeedback() {
+    fun testProgressFeedback() {
         // run
         val feedback = UploadService.progressFeedback(0.5, 60000)
 

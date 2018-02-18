@@ -12,6 +12,7 @@ import javafx.scene.control.TextField
 import javafx.scene.layout.Pane
 import javafx.stage.FileChooser
 import ui.alert.SizedAlert
+import java.io.File
 import java.net.URL
 import java.util.*
 
@@ -35,9 +36,9 @@ class TemplateEditorController : Initializable {
         val answer = SizedAlert(Alert.AlertType.INFORMATION, "Loading a template will discard all unsaved changes.\nAre you sure you want to load a template file?", ButtonType.YES, ButtonType.NO).showAndWait()
         if (answer.isPresent && answer.get() == ButtonType.YES) {
             val chooser = FileChooser()
-            val targetFile = chooser.showOpenDialog(rootPane.scene.window)
+            val targetFile: File? = chooser.showOpenDialog(rootPane.scene.window)
 
-            targetFile.inputStream().use {
+            targetFile?.inputStream()?.use {
                 val template = jsonMapper.readValue(it, UploadDataTemplate::class.java)
                 titleInput.text = template.titleTemplate
                 descriptionInput.text = template.descriptionTemplate
