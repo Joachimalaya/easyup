@@ -17,7 +17,7 @@ import javafx.scene.text.Text
 import template.fill.PlaceholderUpdateService.replacePlaceholders
 import upload.resumable.RestorableUpload
 import upload.resumable.unfinishedUploadDirectory
-import youtube.video.ByteSize
+import youtube.video.BinaryPrefix
 import youtube.video.PrivacyStatus
 import youtube.video.numBytes
 import java.io.File
@@ -33,7 +33,7 @@ object UploadService {
 
     var cancelUpload = false
 
-    private val uploadBufferSize = numBytes(512, ByteSize.MEGABYTE)
+    private val uploadBufferSize = numBytes(512, BinaryPrefix.MEBIBYTE)
 
     fun beginUpload(uploadData: UploadData, placeholders: List<Placeholder>, progressBar: ProgressBar, progressText: Text) {
         // started in new Thread to prevent UI hang
