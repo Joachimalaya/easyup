@@ -13,6 +13,7 @@ import com.google.api.services.youtube.YouTubeScopes
 import exec.appDirectory
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
+import ui.alert.SizedAlert
 import java.io.File
 import java.io.InputStreamReader
 
@@ -36,7 +37,7 @@ object Authorization {
         // check for client secret
         val clientId = File(authDirectory.toString() + "/client_id.json")
         if (!clientId.exists()) {
-            Alert(Alert.AlertType.ERROR, "Could not find $clientId, necessary to connect to YouTube.\nYou can create credential files using Google APIs.\nWill now terminate.", ButtonType.OK).showAndWait()
+            SizedAlert(Alert.AlertType.ERROR, "Could not find $clientId, necessary to connect to YouTube.\nYou can create credential files using Google APIs.\nWill now terminate.", ButtonType.OK).showAndWait()
             throw RuntimeException("Could not find $clientId, necessary to connect to YouTube.\nYou can create credential files using Google APIs.\nWill now terminate.")
         }
 
