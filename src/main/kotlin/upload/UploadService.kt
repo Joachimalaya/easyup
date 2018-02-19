@@ -15,7 +15,6 @@ import entity.UploadData
 import javafx.scene.control.ProgressBar
 import javafx.scene.text.Text
 import template.fill.PlaceholderUpdateService.replacePlaceholders
-import ui.MainWindow
 import upload.resumable.RestorableUpload
 import upload.resumable.unfinishedUploadDirectory
 import youtube.video.BinaryPrefix
@@ -74,7 +73,9 @@ object UploadService {
                         MediaHttpUploader.UploadState.MEDIA_IN_PROGRESS -> {
                             progressBar.progress = percentageDone(it, uploadData)
                             progressText.text = progressFeedback(progressBar.progress, stopwatch.elapsed(TimeUnit.MILLISECONDS))
-                            MainWindow.INSTANCE?.changeTitle(shortProgressFeedback(progressBar.progress, stopwatch.elapsed(TimeUnit.MILLISECONDS)))
+
+                            // TODO: Exception in thread "Thread-5" java.lang.IllegalStateException: This operation is permitted on the event thread only; currentThread = Thread-5
+                            // MainWindow.INSTANCE?.changeTitle(shortProgressFeedback(progressBar.progress, stopwatch.elapsed(TimeUnit.MILLISECONDS)))
                         }
                         MediaHttpUploader.UploadState.MEDIA_COMPLETE -> {
                             progressText.text = "upload complete"
