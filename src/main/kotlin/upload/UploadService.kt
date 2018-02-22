@@ -16,6 +16,7 @@ import entity.UploadData
 import javafx.scene.control.ProgressBar
 import javafx.scene.text.Text
 import template.fill.PlaceholderUpdateService.replacePlaceholders
+import ui.MainWindow
 import upload.resumable.RestorableUpload
 import upload.resumable.unfinishedUploadDirectory
 import youtube.video.BinaryPrefix
@@ -36,6 +37,7 @@ import kotlin.math.roundToLong
 object UploadService {
 
     var cancelUpload = false
+    var uploading = false
 
     private val uploadBufferSize = numBytes(512, BinaryPrefix.MEBIBYTE)
 
@@ -82,8 +84,7 @@ object UploadService {
                             progressBar.progress = percentageDone(it, uploadData.videoFile)
                             progressText.text = progressFeedback(progressBar.progress, stopwatch.elapsed(TimeUnit.MILLISECONDS))
 
-                            // TODO: Exception in thread "Thread-5" java.lang.IllegalStateException: This operation is permitted on the event thread only; currentThread = Thread-5
-                            // MainWindow.INSTANCE?.changeTitle(shortProgressFeedback(progressBar.progress, stopwatch.elapsed(TimeUnit.MILLISECONDS)))
+                             MainWindow.INSTANCE?.changeTitle(shortProgressFeedback(progressBar.progress, stopwatch.elapsed(TimeUnit.MILLISECONDS)))
                         }
                         MediaHttpUploader.UploadState.MEDIA_COMPLETE -> {
                             progressText.text = "upload complete"
@@ -94,6 +95,7 @@ object UploadService {
                     }
                 }
 
+                uploading = true
                 val returnedVideo = videoInsert.execute()
 
                 // add thumbnailFile
@@ -107,6 +109,7 @@ object UploadService {
                         thumbnailSet.execute()
                     }
                 }
+                uploading = false
             }
         }.start()
     }
@@ -126,7 +129,7 @@ object UploadService {
 
     fun shortProgressFeedback(ratioDone: Double, elapsedMillis: Long): String {
         val eta = Duration.ofMillis((elapsedMillis / ratioDone - elapsedMillis).roundToLong()).seconds
-        return String.format("%02.0f%% %d:%02d", ratioDone * 100, eta / 3600, (eta % 3600) / 60, (eta % 60))
+        return String.format("%01.0f%% %d:%02d", ratioDone * 100, eta / 3600, (eta % 3600) / 60, (eta % 60))
     }
 
     private fun getUploadDataFile(): File {

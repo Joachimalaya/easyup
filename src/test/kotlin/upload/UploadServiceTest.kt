@@ -25,6 +25,15 @@ class UploadServiceTest {
         assertEquals("50% 0:01", shortFeedback)
     }
 
+    @Test
+    fun testShortestFeedback() {
+        // run
+        val shortFeedback = UploadService.shortProgressFeedback(0.01, 1000)
+
+        // assert
+        assertEquals("1% 0:01", shortFeedback)
+    }
+
     // TODO: this test currently only works for CET; research mocking or another solution
     @Test
     fun testDateConversion() {

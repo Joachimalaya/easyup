@@ -2,6 +2,7 @@ package ui
 
 import config.activeConfig
 import javafx.application.Application
+import javafx.application.Platform
 import javafx.event.EventHandler
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
@@ -39,26 +40,30 @@ class MainWindow : Application() {
         primaryStage.title = "easyUp"
 
         primaryStage.onCloseRequest = EventHandler {
-            // TODO: check whether upload is running before showing this
-            // security question for user
-            val reallyClose = SizedAlert(Alert.AlertType.WARNING, "Closing the application while an upload is running means all progress will be lost.\nStill quit?", ButtonType.YES, ButtonType.NO).showAndWait()
-            if (reallyClose.isPresent && reallyClose.get() == ButtonType.YES) {
-                activeConfig.writeToDefault()
+            // check whether upload is running before showing this
+            if(UploadService.uploading) {
+                // security question for user
+                val reallyClose = SizedAlert(Alert.AlertType.WARNING, "Closing the application while an upload is running means all progress will be lost.\nStill quit?", ButtonType.YES, ButtonType.NO).showAndWait()
+                if (reallyClose.isPresent && reallyClose.get() == ButtonType.YES) {
+                    activeConfig.writeToDefault()
 
-                // stop uploading thread
-                // TODO: wrap cancel request in method
-                UploadService.cancelUpload = true
-            } else {
-                it.consume()
+                    // stop uploading thread
+                    // TODO: wrap cancel request in method
+                    UploadService.cancelUpload = true
+                } else {
+                    it.consume()
+                }
             }
         }
     }
 
     /**
-     * Add some text to the usual easyUp in the title of the application
+     * Add some text to the usual easyUp in the title of the application.
+     *
+     * This method is safe to call from non-event Threads.
      */
     fun changeTitle(titleSuffix: String) {
-        windowStage?.title = "easyUp - $titleSuffix"
+        Platform.runLater { windowStage?.title = "easyUp - $titleSuffix" }
     }
 
     fun launchApp(args: Array<String>) {
