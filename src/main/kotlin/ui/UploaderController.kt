@@ -19,6 +19,7 @@ import template.read.PrepareUploadService.handleLoadAction
 import upload.UploadService.beginUpload
 import upload.resumable.UnfinishedUploadLoadService.loadUnfinishedUpload
 import java.net.URL
+import java.time.LocalDate
 import java.util.*
 
 
@@ -60,6 +61,7 @@ class UploaderController : Initializable {
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         // load data of incomplete upload if existing
         activeData = loadUnfinishedUpload(titlePreview, descriptionPreview, tagsPreview, thumbnailPreview, placeholderTable)
+        publishDate.value = LocalDate.now()
     }
 
     @FXML
