@@ -46,6 +46,14 @@ class UploaderController : Initializable {
     lateinit var progressText: Text
     @FXML
     lateinit var thumbnailPreview: ImageView
+    @FXML
+    lateinit var scheduledPublish: CheckBox
+    @FXML
+    lateinit var publishDate: DatePicker
+    @FXML
+    lateinit var publishHour: Spinner<Int>
+    @FXML
+    lateinit var publishMinute: Spinner<Int>
 
     private var activeData = UploadData()
 
@@ -63,6 +71,8 @@ class UploaderController : Initializable {
     @FXML
     private fun handleUploadStartAction(event: ActionEvent) {
         lockUI()
+        activeData.publishDate = publishDate.value.atTime(publishHour.value, publishMinute.value)
+        activeData.scheduledPublish = scheduledPublish.isSelected
         beginUpload(activeData, placeholderTable.items, uploadProgress, progressText)
     }
 

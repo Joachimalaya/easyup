@@ -39,15 +39,15 @@
 
                 </VBox>
                 <TableView fx:id="placeholderTable" disable="true" editable="true" GridPane.columnIndex="1"
-                           GridPane.columnSpan="2" GridPane.rowIndex="1">
+                           GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
                     <columns>
                         <TableColumn prefWidth="${placeholderTable.width*0.3}" text="Key">
                             <cellValueFactory>
                                 <PropertyValueFactory property="key"/>
                             </cellValueFactory>
                         </TableColumn>
-                        <TableColumn onEditCommit="#handlePlaceholderUpdate"
-                                     prefWidth="${placeholderTable.width*0.7}" text="Value">
+                        <TableColumn onEditCommit="#handlePlaceholderUpdate" prefWidth="${placeholderTable.width*0.7}"
+                                     text="Value">
                             <cellValueFactory>
                                 <PropertyValueFactory property="value"/>
                             </cellValueFactory>
@@ -63,32 +63,43 @@
 
                 <Text text="Title" GridPane.rowIndex="2" GridPane.valignment="TOP"/>
                 <TextField fx:id="titlePreview" disable="true" editable="false" GridPane.columnIndex="1"
-                           GridPane.columnSpan="2" GridPane.rowIndex="2"/>
+                           GridPane.columnSpan="2147483647" GridPane.rowIndex="2"/>
 
                 <Text text="Description" GridPane.rowIndex="3" GridPane.valignment="TOP"/>
                 <TextArea fx:id="descriptionPreview" disable="true" editable="false" wrapText="true"
-                          GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3"/>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tags" GridPane.rowIndex="4"/>
-                <TextField fx:id="tagsPreview" disable="true" editable="false" prefWidth="205.0"
-                           GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4"/>
+                          GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3"/>
 
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Thumbnail" GridPane.rowIndex="5"
+                <Text text="Timed publish" GridPane.rowIndex="4"/>
+
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tags" GridPane.rowIndex="5"/>
+                <TextField fx:id="tagsPreview" disable="true" editable="false" prefWidth="205.0"
+                           GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="5"/>
+
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Thumbnail" GridPane.rowIndex="6"
                       GridPane.valignment="TOP"/>
 
                 <ProgressBar fx:id="uploadProgress" prefWidth="200.0" progress="0.0" GridPane.columnIndex="1"
-                             GridPane.rowIndex="6"/>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Upload Progress" GridPane.rowIndex="6"/>
-                <Text fx:id="progressText" text="0%" GridPane.columnIndex="2" GridPane.rowIndex="6"/>
+                             GridPane.rowIndex="7"/>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Upload Progress" GridPane.rowIndex="7"/>
+                <Text fx:id="progressText" text="0%" GridPane.columnIndex="2" GridPane.rowIndex="7"/>
                 <ImageView fx:id="thumbnailPreview" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true"
-                           preserveRatio="true"
-                           GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                           preserveRatio="true" GridPane.columnIndex="1" GridPane.columnSpan="2147483647"
+                           GridPane.rowIndex="6"/>
+                <CheckBox fx:id="scheduledPublish" mnemonicParsing="false" text="publish at:" GridPane.columnIndex="1"
+                          GridPane.rowIndex="4"/>
+                <DatePicker fx:id="publishDate" GridPane.columnIndex="2" GridPane.rowIndex="4"/>
+                <Spinner fx:id="publishHour" GridPane.columnIndex="3" GridPane.rowIndex="4" min="0" max="23"
+                         editable="true"/>
+                <Spinner fx:id="publishMinute" GridPane.columnIndex="4" GridPane.rowIndex="4" min="0" max="59"
+                         amountToStepBy="5" editable="true"/>
             </children>
-
 
             <columnConstraints>
                 <ColumnConstraints hgrow="NEVER" minWidth="150.0" prefWidth="100.0"/>  <!-- 0 -->
-                <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0"/> <!-- 1 -->
-                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>  <!-- 2 -->
+                <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="150.0"/> <!-- 1 -->
+                <ColumnConstraints hgrow="NEVER" minWidth="150.0" prefWidth="200.0"/> <!-- 2 -->
+                <ColumnConstraints hgrow="NEVER" minWidth="150.0" prefWidth="100.0"/> <!-- 3 -->
+                <ColumnConstraints hgrow="ALWAYS" minWidth="150.0" prefWidth="100.0"/>  <!-- 4 -->
             </columnConstraints>
             <rowConstraints>
                 <RowConstraints vgrow="NEVER"/>   <!-- 0 -->
@@ -96,8 +107,9 @@
                 <RowConstraints vgrow="NEVER"/>   <!-- 2 -->
                 <RowConstraints vgrow="ALWAYS"/>   <!-- 3 -->
                 <RowConstraints vgrow="NEVER"/>    <!-- 4 -->
-                <RowConstraints vgrow="ALWAYS"/>   <!-- 5 -->
-                <RowConstraints vgrow="NEVER"/>    <!-- 6 -->
+                <RowConstraints vgrow="NEVER"/>   <!-- 5 -->
+                <RowConstraints vgrow="ALWAYS"/> <!-- 6 -->
+                <RowConstraints vgrow="NEVER"/>    <!-- 7 -->
             </rowConstraints>
         </GridPane>
     </center>

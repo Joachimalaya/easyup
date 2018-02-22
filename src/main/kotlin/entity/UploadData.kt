@@ -2,11 +2,12 @@ package entity
 
 import exec.appDirectory
 import java.io.File
+import java.time.LocalDateTime
 import java.util.*
 
-open class UploadData(var title: String, var description: String, var game: String, var tags: Array<String>, var videoFile: File, var thumbnailFile: File?) {
+open class UploadData(var title: String, var description: String, var game: String, var tags: Array<String>, var videoFile: File, var thumbnailFile: File?, var publishDate: LocalDateTime, var scheduledPublish: Boolean) {
 
-    constructor(template: UploadDataTemplate, videoFile: File, thumbnailFile: File?) : this(template.titleTemplate, template.descriptionTemplate, template.game, template.tags, videoFile, thumbnailFile)
+    constructor(template: UploadDataTemplate, videoFile: File, thumbnailFile: File?) : this(template.titleTemplate, template.descriptionTemplate, template.game, template.tags, videoFile, thumbnailFile, LocalDateTime.now(), false)
 
     constructor() : this(UploadDataTemplate(), appDirectory, null)
 

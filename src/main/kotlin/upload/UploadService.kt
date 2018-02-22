@@ -4,6 +4,7 @@ import auth.Authorization
 import com.google.api.client.googleapis.media.MediaHttpUploader
 import com.google.api.client.googleapis.media.MediaHttpUploaderProgressListener
 import com.google.api.client.http.InputStreamContent
+import com.google.api.client.util.DateTime
 import com.google.api.services.youtube.model.Video
 import com.google.api.services.youtube.model.VideoSnippet
 import com.google.api.services.youtube.model.VideoStatus
@@ -22,9 +23,12 @@ import youtube.video.PrivacyStatus
 import youtube.video.numBytes
 import java.io.File
 import java.time.Duration
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
+
 
 /**
  * Handles the actual upload of data to YouTube by calling the API.
@@ -45,6 +49,10 @@ object UploadService {
 
             video.status = VideoStatus()
             video.status.privacyStatus = PrivacyStatus.PRIVATE.privacyStatus
+
+            if (uploadData.scheduledPublish) {
+                publishDateToGoogleDateTime(uploadData.publishDate)
+            }
 
             video.snippet = VideoSnippet()
             video.snippet.title = replacePlaceholders(uploadData.title, placeholders)
@@ -71,7 +79,7 @@ object UploadService {
                         MediaHttpUploader.UploadState.INITIATION_COMPLETE ->
                             stopwatch.start()
                         MediaHttpUploader.UploadState.MEDIA_IN_PROGRESS -> {
-                            progressBar.progress = percentageDone(it, uploadData)
+                            progressBar.progress = percentageDone(it, uploadData.videoFile)
                             progressText.text = progressFeedback(progressBar.progress, stopwatch.elapsed(TimeUnit.MILLISECONDS))
 
                             // TODO: Exception in thread "Thread-5" java.lang.IllegalStateException: This operation is permitted on the event thread only; currentThread = Thread-5
@@ -103,8 +111,13 @@ object UploadService {
         }.start()
     }
 
-    private fun percentageDone(uploader: MediaHttpUploader, uploadData: UploadData) =
-            uploader.numBytesUploaded.toDouble() / uploadData.videoFile.length().toDouble()
+    fun publishDateToGoogleDateTime(publishDate: LocalDateTime): DateTime {
+        val out = Date.from(publishDate.atZone(ZoneId.systemDefault()).toInstant())
+        return DateTime(out)
+    }
+
+    private fun percentageDone(uploader: MediaHttpUploader, uploadedFile: File) =
+            uploader.numBytesUploaded.toDouble() / uploadedFile.length().toDouble()
 
     fun progressFeedback(ratioDone: Double, elapsedMillis: Long): String {
         val eta = Duration.ofMillis((elapsedMillis / ratioDone - elapsedMillis).roundToLong()).seconds
