@@ -11,6 +11,8 @@ class RestorableUpload(var placeholders: List<Placeholder>, uploadData: UploadDa
         tags = uploadData.tags
         videoFile = uploadData.videoFile
         thumbnailFile = uploadData.thumbnailFile
+        scheduledPublish = uploadData.scheduledPublish
+        publishDate = uploadData.publishDate
     }
 
     constructor() : this(emptyList(), UploadData())

@@ -68,9 +68,12 @@ object PrepareUploadService {
         chooser.title = "Select video to upload"
 
         chooser.extensionFilters.addAll(supportedVideoFormats + allFilesFilter)
+        chooser.selectedExtensionFilter = chooser.extensionFilters[activeConfig.preferredVideoFormatIndex]
 
         val videoFile = chooser.showOpenDialog(window)
         activeConfig.updateLastVisitedDirectory(videoFile)
+        activeConfig.preferredVideoFormatIndex = chooser.extensionFilters.indexOf(chooser.selectedExtensionFilter)
+
         return videoFile
     }
 
@@ -102,7 +105,7 @@ object PrepareUploadService {
         return thumbnailFile
     }
 
-    private val supportedVideoFormats = listOf(FileChooser.ExtensionFilter("QuickTime Movie", "*.mov"),
+    val supportedVideoFormats = listOf(FileChooser.ExtensionFilter("QuickTime Movie", "*.mov"),
             FileChooser.ExtensionFilter("MP4", "*.mp4", "*.mpeg4"),
             FileChooser.ExtensionFilter("Audio Video Interleaved", "*.avi"),
             FileChooser.ExtensionFilter("Windows Media Video", "*.wmv"),

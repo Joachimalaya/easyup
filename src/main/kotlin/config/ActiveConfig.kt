@@ -3,6 +3,7 @@ package config
 import com.google.common.io.Files
 import exec.appDirectory
 import org.codehaus.jackson.JsonFactory
+import org.codehaus.jackson.map.JsonMappingException
 import org.codehaus.jackson.map.ObjectMapper
 import java.io.File
 
@@ -13,9 +14,14 @@ private fun acquireDefaultConfigFile(): File {
 }
 
 private fun loadFromDefault(): ActiveConfig {
-    return if(defaultConfigFile.exists()) {
-        defaultConfigFile.inputStream().use { jsonMapper.readValue(it, ActiveConfig::class.java) }
-    } else {
+    return try {
+        if (defaultConfigFile.exists()) {
+            defaultConfigFile.inputStream().use { jsonMapper.readValue(it, ActiveConfig::class.java) }
+        } else {
+            ActiveConfig()
+        }
+    } catch (jme: JsonMappingException) {
+        // reset config to default
         ActiveConfig()
     }
 }
@@ -44,6 +50,8 @@ class ActiveConfig {
             false -> selected.parentFile
         }
     }
+
+    var preferredVideoFormatIndex = 0
 
     fun writeToDefault() = defaultConfigFile.outputStream().use { jsonMapper.writeValue(it, this) }
 }

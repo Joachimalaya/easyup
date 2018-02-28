@@ -73,8 +73,8 @@ class UploaderController : Initializable {
     @FXML
     private fun handleUploadStartAction(event: ActionEvent) {
         lockUI()
-        activeData.publishDate = publishDate.value.atTime(publishHour.value, publishMinute.value)
-        activeData.scheduledPublish = scheduledPublish.isSelected
+        activeData.publishDate = publishDate.valueProperty().get().atTime(publishHour.valueProperty().get(), publishMinute.valueProperty().get())
+        activeData.scheduledPublish = scheduledPublish.selectedProperty().get()
         beginUpload(activeData, placeholderTable.items, uploadProgress, progressText)
     }
 
