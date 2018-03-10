@@ -4,8 +4,8 @@ import com.google.common.collect.Lists
 import config.activeConfig
 import config.jsonMapper
 import entity.Placeholder
-import entity.UploadData
-import entity.UploadDataTemplate
+import entity.RawUploadTemplate
+import entity.UploadTemplate
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.scene.control.TableView
@@ -24,14 +24,14 @@ val formatPattern = Pattern.compile("\\{(\\w*)}")!!
  */
 object PrepareUploadService {
 
-    fun handleLoadAction(window: Window, titlePreview: TextInputControl, descriptionPreview: TextInputControl, placeholderTable: TableView<Placeholder>, tagsPreview: TextInputControl, thumbnailPreview: ImageView): UploadData {
+    fun handleLoadAction(window: Window, titlePreview: TextInputControl, descriptionPreview: TextInputControl, placeholderTable: TableView<Placeholder>, tagsPreview: TextInputControl, thumbnailPreview: ImageView): UploadTemplate {
         val videoFile = askForVideoFile(window)
         val template = askForTemplate(window)
         val thumbnailFile = askForThumbnail(window)
 
         if (videoFile == null || template == null) {
             Alert(Alert.AlertType.ERROR, "You need to provide both a video file and a template.", ButtonType.OK).showAndWait()
-            return UploadData()
+            return UploadTemplate()
         }
 
         thumbnailFile?.inputStream()?.use { thumbnailPreview.image = Image(it) }
@@ -47,7 +47,7 @@ object PrepareUploadService {
         placeholderTable.isDisable = false
         tagsPreview.isDisable = false
 
-        return UploadData(template, videoFile, thumbnailFile)
+        return UploadTemplate(template, videoFile, thumbnailFile)
     }
 
     private fun findAllPlaceholders(template: String): List<Placeholder> {
@@ -74,7 +74,7 @@ object PrepareUploadService {
         return videoFile
     }
 
-    private fun askForTemplate(window: Window): UploadDataTemplate? {
+    private fun askForTemplate(window: Window): RawUploadTemplate? {
         val chooser = FileChooser()
         chooser.title = "Select a template file"
         chooser.initialDirectory = activeConfig.lastVisitedDirectory
@@ -85,7 +85,7 @@ object PrepareUploadService {
         val templateFile = chooser.showOpenDialog(window)
         activeConfig.updateLastVisitedDirectory(templateFile)
         return if (templateFile != null) {
-            jsonMapper.readValue(templateFile, UploadDataTemplate::class.java)
+            jsonMapper.readValue(templateFile, RawUploadTemplate::class.java)
         } else {
             null
         }

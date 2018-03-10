@@ -9,15 +9,10 @@ import com.google.api.services.youtube.model.Video
 import com.google.api.services.youtube.model.VideoSnippet
 import com.google.api.services.youtube.model.VideoStatus
 import com.google.common.base.Stopwatch
-import com.google.common.io.Files
 import config.jsonMapper
-import entity.Placeholder
-import entity.UploadData
-import javafx.scene.control.ProgressBar
-import javafx.scene.text.Text
+import entity.UploadJob
 import template.fill.PlaceholderUpdateService.replacePlaceholders
 import ui.MainWindow
-import upload.resumable.RestorableUpload
 import upload.resumable.unfinishedUploadDirectory
 import youtube.video.BinaryPrefix
 import youtube.video.PrivacyStatus
@@ -32,36 +27,37 @@ import kotlin.math.roundToLong
 
 
 /**
- * Handles the actual upload of data to YouTube by calling the API.
+ * Handles the actual upload of template to YouTube by calling the API.
  */
 object UploadService {
 
     var cancelUpload = false
+
     var uploading = false
+        private set
+
+    private val uploadQueue = LinkedList<UploadJob>()
 
     private val uploadBufferSize = numBytes(512, BinaryPrefix.MEBIBYTE)
 
-    fun beginUpload(uploadData: UploadData, placeholders: List<Placeholder>, progressBar: ProgressBar, progressText: Text) {
+    private fun beginUpload(uploadJob: UploadJob) {
         // started in new Thread to prevent UI hang
         Thread {
-            val uploadPersistenceFile = getUploadDataFile()
-            uploadPersistenceFile.outputStream().use { jsonMapper.writeValue(it, RestorableUpload(placeholders, uploadData)) }
-
             val video = Video()
 
             video.status = VideoStatus()
             video.status.privacyStatus = PrivacyStatus.PRIVATE.privacyStatus
 
-            if (uploadData.scheduledPublish) {
-                publishDateToGoogleDateTime(uploadData.publishDate)
+            if (uploadJob.template.scheduledPublish) {
+                publishDateToGoogleDateTime(uploadJob.template.publishDate)
             }
 
             video.snippet = VideoSnippet()
-            video.snippet.title = replacePlaceholders(uploadData.title, placeholders)
-            video.snippet.description = replacePlaceholders(uploadData.description, placeholders)
+            video.snippet.title = replacePlaceholders(uploadJob.template.title, uploadJob.placeholders)
+            video.snippet.description = replacePlaceholders(uploadJob.template.description, uploadJob.placeholders)
 
-            video.snippet.tags = uploadData.tags.asList()
-            uploadData.videoFile.inputStream().buffered(uploadBufferSize).use {
+            video.snippet.tags = uploadJob.template.tags.asList()
+            uploadJob.template.videoFile.inputStream().buffered(uploadBufferSize).use {
                 val mediaContent = InputStreamContent("video/*", it)
                 mediaContent.setRetrySupported(true)
                 val videoInsert = Authorization.connection.videos().insert("snippet,statistics,status", video, mediaContent)
@@ -75,22 +71,19 @@ object UploadService {
                     }
                     when (it.uploadState!!) {
                         MediaHttpUploader.UploadState.NOT_STARTED ->
-                            progressText.text = "starting..."
+                            uploadJob.progressText.value = "starting..."
                         MediaHttpUploader.UploadState.INITIATION_STARTED ->
-                            progressText.text = "initiating upload..."
+                            uploadJob.progressText.value = "initiating upload..."
                         MediaHttpUploader.UploadState.INITIATION_COMPLETE ->
                             stopwatch.start()
                         MediaHttpUploader.UploadState.MEDIA_IN_PROGRESS -> {
-                            progressBar.progress = percentageDone(it, uploadData.videoFile)
-                            progressText.text = progressFeedback(progressBar.progress, stopwatch.elapsed(TimeUnit.MILLISECONDS))
+                            uploadJob.progressBar.value = percentageDone(it, uploadJob.template.videoFile)
+                            uploadJob.progressText.value = progressFeedback(uploadJob.progressBar.value, stopwatch.elapsed(TimeUnit.MILLISECONDS))
 
-                             MainWindow.INSTANCE?.changeTitle(shortProgressFeedback(progressBar.progress, stopwatch.elapsed(TimeUnit.MILLISECONDS)))
+                            MainWindow.INSTANCE?.changeTitle(shortProgressFeedback(uploadJob.progressBar.value, stopwatch.elapsed(TimeUnit.MILLISECONDS)))
                         }
                         MediaHttpUploader.UploadState.MEDIA_COMPLETE -> {
-                            progressText.text = "upload complete"
-
-                            // delete persisted upload file
-                            uploadPersistenceFile.delete()
+                            uploadJob.progressText.value = "upload complete"
                         }
                     }
                 }
@@ -99,17 +92,21 @@ object UploadService {
                 val returnedVideo = videoInsert.execute()
 
                 // add thumbnailFile
-                if (uploadData.thumbnailFile != null) {
-                    uploadData.thumbnailFile!!.inputStream().use {
-                        val thumbnailSet = Authorization.connection.thumbnails().set(returnedVideo.id, InputStreamContent("image/png", it))
-                        thumbnailSet.mediaHttpUploader.isDirectUploadEnabled = false
-                        thumbnailSet.mediaHttpUploader.progressListener = MediaHttpUploaderProgressListener {
-                            // TODO: implement simple notification
-                        }
-                        thumbnailSet.execute()
+                uploadJob.template.thumbnailFile?.inputStream().use {
+                    val thumbnailSet = Authorization.connection.thumbnails().set(returnedVideo.id, InputStreamContent("image/png", it))
+                    thumbnailSet.mediaHttpUploader.isDirectUploadEnabled = false
+                    thumbnailSet.mediaHttpUploader.progressListener = MediaHttpUploaderProgressListener {
+                        // TODO: implement simple notification
                     }
+                    thumbnailSet.execute()
                 }
+                // remove entry from queue and update persisted data
+                uploadQueue.pop()
+                persistUploadQueue()
+
+                // start next queued upload
                 uploading = false
+                tryToStartUpload()
             }
         }.start()
     }
@@ -132,10 +129,21 @@ object UploadService {
         return String.format("%01.0f%% %d:%02d", ratioDone * 100, eta / 3600, (eta % 3600) / 60, (eta % 60))
     }
 
-    private fun getUploadDataFile(): File {
-        val uploadDataFile = File("$unfinishedUploadDirectory/${UUID.randomUUID()}.json")
-        Files.createParentDirs(uploadDataFile)
-        return uploadDataFile
+    fun scheduleUpload(job: UploadJob) {
+        uploadQueue.push(job)
+        persistUploadQueue()
+        tryToStartUpload()
+    }
+
+    private fun persistUploadQueue() {
+        val persistenceFile = File("$unfinishedUploadDirectory/queue.json")
+        jsonMapper.writeValue(persistenceFile, uploadQueue)
+    }
+
+    private fun tryToStartUpload() {
+        if (!uploading && !uploadQueue.isEmpty()) {
+            beginUpload(uploadQueue.peek())
+        }
     }
 
 }

@@ -1,9 +1,10 @@
 package config
 
+import com.fasterxml.jackson.core.JsonFactory
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.google.common.io.Files
 import exec.appDirectory
-import org.codehaus.jackson.JsonFactory
-import org.codehaus.jackson.map.ObjectMapper
 import java.io.File
 
 private fun acquireDefaultConfigFile(): File {
@@ -20,7 +21,9 @@ private fun loadFromDefault(): ActiveConfig {
     }
 }
 
-val jsonMapper = ObjectMapper(JsonFactory())
+// jsonMapper setup
+val jsonMapper: ObjectMapper = ObjectMapper(JsonFactory()).registerModule(JavaTimeModule())
+
 val defaultConfigFile = acquireDefaultConfigFile()
 val activeConfig = loadFromDefault()
 

@@ -10,107 +10,90 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="ui.UploaderController">
-    <top>
+<GridPane xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+          hgap="5" styleClass="root" vgap="5" fx:controller="ui.UploaderController">
 
-        <MenuBar BorderPane.alignment="CENTER">
-            <Menu text="File">
-                <MenuItem onAction="#handleTemplateOpen" text="Open Template Editor..."/>
-                <MenuItem text="Close"/>
-            </Menu>
-        </MenuBar>
-    </top>
-    <center>
-        <GridPane hgap="5" styleClass="root" vgap="5">
+    <padding>
+        <Insets bottom="5" left="5" right="5" top="5"/>
+    </padding>
 
-            <padding>
-                <Insets bottom="5" left="5" right="5" top="5"/>
-            </padding>
+    <children>
+        <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.rowIndex="1">
+            <Button fx:id="prepareButton" maxWidth="Infinity" onAction="#handlePrepareAction"
+                    text="Prepare new upload"/>
+            <Button fx:id="startButton" maxWidth="Infinity" onAction="#handleUploadStartAction"
+                    text="Start upload"/>
+        </VBox>
+        <TableView fx:id="placeholderTable" disable="true" editable="true" GridPane.columnIndex="1"
+                   GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+            <columns>
+                <TableColumn prefWidth="${placeholderTable.width*0.3}" text="Key">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="key"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn onEditCommit="#handlePlaceholderUpdate" prefWidth="${placeholderTable.width*0.7}"
+                             text="Value">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="value"/>
+                    </cellValueFactory>
+                    <cellFactory>
+                        <TextFieldTableCell fx:factory="forTableColumn"/>
+                    </cellFactory>
+                </TableColumn>
+            </columns>
+            <items>
+                <FXCollections fx:factory="observableArrayList"/>
+            </items>
+        </TableView>
 
-            <children>
-                <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.rowIndex="1">
-                    <children>
-                        <Button fx:id="prepareButton" maxWidth="Infinity" onAction="#handlePrepareAction"
-                                text="Prepare new upload"/>
-                        <Button fx:id="startButton" maxWidth="Infinity" onAction="#handleUploadStartAction"
-                                text="Start upload"/>
-                    </children>
+        <Text text="Title" GridPane.rowIndex="2" GridPane.valignment="TOP"/>
+        <TextField fx:id="titlePreview" disable="true" editable="false" GridPane.columnIndex="1"
+                   GridPane.columnSpan="2147483647" GridPane.rowIndex="2"/>
 
-                </VBox>
-                <TableView fx:id="placeholderTable" disable="true" editable="true" GridPane.columnIndex="1"
-                           GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
-                    <columns>
-                        <TableColumn prefWidth="${placeholderTable.width*0.3}" text="Key">
-                            <cellValueFactory>
-                                <PropertyValueFactory property="key"/>
-                            </cellValueFactory>
-                        </TableColumn>
-                        <TableColumn onEditCommit="#handlePlaceholderUpdate" prefWidth="${placeholderTable.width*0.7}"
-                                     text="Value">
-                            <cellValueFactory>
-                                <PropertyValueFactory property="value"/>
-                            </cellValueFactory>
-                            <cellFactory>
-                                <TextFieldTableCell fx:factory="forTableColumn"/>
-                            </cellFactory>
-                        </TableColumn>
-                    </columns>
-                    <items>
-                        <FXCollections fx:factory="observableArrayList"/>
-                    </items>
-                </TableView>
+        <Text text="Description" GridPane.rowIndex="3" GridPane.valignment="TOP"/>
+        <TextArea fx:id="descriptionPreview" disable="true" editable="false" wrapText="true" GridPane.columnIndex="1"
+                  GridPane.columnSpan="2147483647" GridPane.rowIndex="3"/>
 
-                <Text text="Title" GridPane.rowIndex="2" GridPane.valignment="TOP"/>
-                <TextField fx:id="titlePreview" disable="true" editable="false" GridPane.columnIndex="1"
-                           GridPane.columnSpan="2147483647" GridPane.rowIndex="2"/>
 
-                <Text text="Description" GridPane.rowIndex="3" GridPane.valignment="TOP"/>
-                <TextArea fx:id="descriptionPreview" disable="true" editable="false" wrapText="true"
-                          GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3"/>
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tags" GridPane.rowIndex="5"/>
+        <TextField fx:id="tagsPreview" disable="true" editable="false" prefWidth="205.0" GridPane.columnIndex="1"
+                   GridPane.columnSpan="2147483647" GridPane.rowIndex="5"/>
 
-                <Text text="Timed publish" GridPane.rowIndex="4"/>
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Thumbnail" GridPane.rowIndex="6" GridPane.valignment="TOP"/>
+        <ImageView fx:id="thumbnailPreview" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true"
+                   GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="6"/>
 
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tags" GridPane.rowIndex="5"/>
-                <TextField fx:id="tagsPreview" disable="true" editable="false" prefWidth="205.0"
-                           GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="5"/>
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Upload Progress" GridPane.rowIndex="7"
+              GridPane.columnIndex="1"/>
+        <ProgressBar fx:id="uploadProgress" prefWidth="200.0" progress="0.0" GridPane.columnIndex="2"
+                     GridPane.rowIndex="7"/>
+        <Text fx:id="progressText" text="0%" GridPane.columnIndex="3" GridPane.rowIndex="7"/>
 
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Thumbnail" GridPane.rowIndex="6"
-                      GridPane.valignment="TOP"/>
+        <Text text="Scheduled publish" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <CheckBox fx:id="scheduledPublish" mnemonicParsing="false" text="publish at:" GridPane.columnIndex="1"
+                  GridPane.rowIndex="4"/>
+        <DatePicker fx:id="publishDate" GridPane.columnIndex="2" GridPane.rowIndex="4"/>
+        <Spinner fx:id="publishHour" editable="true" max="23" min="0" GridPane.columnIndex="3" GridPane.rowIndex="4"/>
+        <Spinner fx:id="publishMinute" amountToStepBy="5" editable="true" max="59" min="0" GridPane.columnIndex="4"
+                 GridPane.rowIndex="4"/>
+    </children>
 
-                <ProgressBar fx:id="uploadProgress" prefWidth="200.0" progress="0.0" GridPane.columnIndex="1"
-                             GridPane.rowIndex="7"/>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Upload Progress" GridPane.rowIndex="7"/>
-                <Text fx:id="progressText" text="0%" GridPane.columnIndex="2" GridPane.rowIndex="7"/>
-                <ImageView fx:id="thumbnailPreview" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true"
-                           preserveRatio="true" GridPane.columnIndex="1" GridPane.columnSpan="2147483647"
-                           GridPane.rowIndex="6"/>
-                <CheckBox fx:id="scheduledPublish" mnemonicParsing="false" text="publish at:" GridPane.columnIndex="1"
-                          GridPane.rowIndex="4"/>
-                <DatePicker fx:id="publishDate" GridPane.columnIndex="2" GridPane.rowIndex="4"/>
-                <Spinner fx:id="publishHour" GridPane.columnIndex="3" GridPane.rowIndex="4" min="0" max="23"
-                         editable="true"/>
-                <Spinner fx:id="publishMinute" GridPane.columnIndex="4" GridPane.rowIndex="4" min="0" max="59"
-                         amountToStepBy="5" editable="true"/>
-            </children>
-
-            <columnConstraints>
-                <ColumnConstraints hgrow="NEVER" minWidth="150.0" prefWidth="100.0"/>  <!-- 0 -->
-                <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="150.0"/> <!-- 1 -->
-                <ColumnConstraints hgrow="NEVER" minWidth="150.0" prefWidth="200.0"/> <!-- 2 -->
-                <ColumnConstraints hgrow="NEVER" minWidth="150.0" prefWidth="100.0"/> <!-- 3 -->
-                <ColumnConstraints hgrow="ALWAYS" minWidth="150.0" prefWidth="100.0"/>  <!-- 4 -->
-            </columnConstraints>
-            <rowConstraints>
-                <RowConstraints vgrow="NEVER"/>   <!-- 0 -->
-                <RowConstraints vgrow="ALWAYS"/>   <!-- 1 -->
-                <RowConstraints vgrow="NEVER"/>   <!-- 2 -->
-                <RowConstraints vgrow="ALWAYS"/>   <!-- 3 -->
-                <RowConstraints vgrow="NEVER"/>    <!-- 4 -->
-                <RowConstraints vgrow="NEVER"/>   <!-- 5 -->
-                <RowConstraints vgrow="ALWAYS"/> <!-- 6 -->
-                <RowConstraints vgrow="NEVER"/>    <!-- 7 -->
-            </rowConstraints>
-        </GridPane>
-    </center>
-</BorderPane>
+    <columnConstraints>
+        <ColumnConstraints hgrow="NEVER" minWidth="150.0" prefWidth="100.0"/>  <!-- 0 -->
+        <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="150.0"/> <!-- 1 -->
+        <ColumnConstraints hgrow="NEVER" minWidth="150.0" prefWidth="200.0"/> <!-- 2 -->
+        <ColumnConstraints hgrow="NEVER" minWidth="150.0" prefWidth="100.0"/> <!-- 3 -->
+        <ColumnConstraints hgrow="ALWAYS" minWidth="150.0" prefWidth="100.0"/>  <!-- 4 -->
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints vgrow="NEVER"/>   <!-- 0 -->
+        <RowConstraints vgrow="ALWAYS"/>   <!-- 1 -->
+        <RowConstraints vgrow="NEVER"/>   <!-- 2 -->
+        <RowConstraints vgrow="ALWAYS"/>   <!-- 3 -->
+        <RowConstraints vgrow="NEVER"/>    <!-- 4 -->
+        <RowConstraints vgrow="NEVER"/>   <!-- 5 -->
+        <RowConstraints vgrow="ALWAYS"/> <!-- 6 -->
+        <RowConstraints vgrow="NEVER"/>    <!-- 7 -->
+    </rowConstraints>
+</GridPane>

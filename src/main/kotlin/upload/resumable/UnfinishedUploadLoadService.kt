@@ -2,7 +2,7 @@ package upload.resumable
 
 import config.jsonMapper
 import entity.Placeholder
-import entity.UploadData
+import entity.UploadTemplate
 import exec.appDirectory
 import javafx.scene.control.*
 import javafx.scene.image.Image
@@ -13,12 +13,13 @@ import java.io.File
 
 val unfinishedUploadDirectory = File("$appDirectory/uploads")
 
+// TODO: currently unused; need to open tabs for every unfinished upload
 object UnfinishedUploadLoadService {
 
     private fun findUnfinishedUpload(): File? =
             unfinishedUploadDirectory.listFiles({ _, name -> name.endsWith(".json") }).firstOrNull()
 
-    fun loadUnfinishedUpload(titlePreview: TextField, descriptionPreview: TextArea, tags: TextField, thumbnailPreview: ImageView, placeholderTable: TableView<Placeholder>): UploadData {
+    fun loadUnfinishedUpload(titlePreview: TextField, descriptionPreview: TextArea, tags: TextField, thumbnailPreview: ImageView, placeholderTable: TableView<Placeholder>): UploadTemplate {
         val unfinishedUpload = findUnfinishedUpload()
 
         if (unfinishedUpload != null) {
@@ -47,7 +48,7 @@ object UnfinishedUploadLoadService {
             deleteUnfinishedUpload(unfinishedUpload)
         }
 
-        return UploadData()
+        return UploadTemplate()
     }
 
     private fun deleteUnfinishedUpload(unfinishedUpload: File) {

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?language javascript?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import ui.tab.AddTab?>
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ui.MainWindowController">
+    <top>
+        <MenuBar BorderPane.alignment="CENTER">
+            <Menu text="File">
+                <MenuItem onAction="#handleTemplateOpen" text="Open Template Editor..."/>
+                <MenuItem text="Close"/>
+            </Menu>
+        </MenuBar>
+    </top>
+    <center>
+        <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" fx:id="tabPane">
+            <tabs>
+                <AddTab/>
+            </tabs>
+        </TabPane>
+    </center>
+</BorderPane>

@@ -1,7 +1,7 @@
 package template.fill
 
 import entity.Placeholder
-import entity.UploadData
+import entity.UploadTemplate
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TextArea
 import javafx.scene.control.TextField
@@ -12,11 +12,11 @@ import javafx.scene.control.TextField
  */
 object PlaceholderUpdateService {
 
-    fun updatePlaceholders(event: TableColumn.CellEditEvent<Placeholder, String>, titlePreview: TextField, descriptionPreview: TextArea, activeData: UploadData) {
+    fun updatePlaceholders(event: TableColumn.CellEditEvent<Placeholder, String>, titlePreview: TextField, descriptionPreview: TextArea, activeTemplate: UploadTemplate) {
         event.tableView.items[event.tablePosition.row].value = event.newValue
 
-        titlePreview.text = replacePlaceholders(activeData.title, event.tableView.items)
-        descriptionPreview.text = replacePlaceholders(activeData.description, event.tableView.items)
+        titlePreview.text = replacePlaceholders(activeTemplate.title, event.tableView.items)
+        descriptionPreview.text = replacePlaceholders(activeTemplate.description, event.tableView.items)
     }
 
     /**
