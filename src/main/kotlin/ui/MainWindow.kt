@@ -20,7 +20,7 @@ class MainWindow : Application() {
         var INSTANCE: MainWindow? = null
     }
 
-    private val layoutPath = "Uploader.fxml"
+    private val layoutPath = "MainWindow.fxml"
     private val cssConfig = "application.css"
 
     var windowStage: Stage? = null

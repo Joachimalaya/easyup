@@ -46,5 +46,4 @@ class UploadServiceTest {
         // assert
         assertEquals(1482583500000, dateTime.value)
     }
-
 }

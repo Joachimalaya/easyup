@@ -2,10 +2,10 @@ package config
 
 import com.google.common.io.Files
 import exec.appDirectory
-import org.codehaus.jackson.JsonFactory
 import org.codehaus.jackson.map.JsonMappingException
 import org.codehaus.jackson.map.ObjectMapper
 import java.io.File
+
 
 private fun acquireDefaultConfigFile(): File {
     val file = File(appDirectory.toString() + "/config/config.json")
@@ -26,7 +26,9 @@ private fun loadFromDefault(): ActiveConfig {
     }
 }
 
-val jsonMapper = ObjectMapper(JsonFactory())
+// jsonMapper setup
+val jsonMapper: ObjectMapper = ObjectMapper(JsonFactory()).registerModule(JavaTimeModule())
+
 val defaultConfigFile = acquireDefaultConfigFile()
 val activeConfig = loadFromDefault()
 

@@ -1,23 +1,18 @@
 package ui
 
 import entity.Placeholder
-import entity.UploadData
+import entity.UploadJob
+import entity.UploadTemplate
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
-import javafx.fxml.FXMLLoader
 import javafx.fxml.Initializable
-import javafx.scene.Scene
 import javafx.scene.control.*
 import javafx.scene.control.TableColumn.CellEditEvent
 import javafx.scene.image.ImageView
-import javafx.scene.layout.Pane
 import javafx.scene.text.Text
-import javafx.stage.Modality
-import javafx.stage.Stage
 import template.fill.PlaceholderUpdateService.updatePlaceholders
 import template.read.PrepareUploadService.handleLoadAction
-import upload.UploadService.beginUpload
-import upload.resumable.UnfinishedUploadLoadService.loadUnfinishedUpload
+import upload.UploadService.scheduleUpload
 import java.net.URL
 import java.time.LocalDate
 import java.util.*
@@ -29,9 +24,6 @@ class UploaderController : Initializable {
     lateinit var prepareButton: Button
     @FXML
     lateinit var startButton: Button
-
-    @FXML
-    lateinit var rootPane: Pane
 
     @FXML
     lateinit var titlePreview: TextField
@@ -56,26 +48,24 @@ class UploaderController : Initializable {
     @FXML
     lateinit var publishMinute: Spinner<Int>
 
-    private var activeData = UploadData()
+    private var activeData = UploadTemplate()
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
-        // load data of incomplete upload if existing
-        activeData = loadUnfinishedUpload(titlePreview, descriptionPreview, tagsPreview, thumbnailPreview, placeholderTable)
         publishDate.value = LocalDate.now()
     }
 
     @FXML
     private fun handlePrepareAction(event: ActionEvent) {
-        val window = rootPane.scene.window
+        val window = (event.source as Control).scene.window
         activeData = handleLoadAction(window, titlePreview, descriptionPreview, placeholderTable, tagsPreview, thumbnailPreview)
     }
 
     @FXML
     private fun handleUploadStartAction(event: ActionEvent) {
         lockUI()
-        activeData.publishDate = publishDate.valueProperty().get().atTime(publishHour.valueProperty().get(), publishMinute.valueProperty().get())
-        activeData.scheduledPublish = scheduledPublish.selectedProperty().get()
-        beginUpload(activeData, placeholderTable.items, uploadProgress, progressText)
+        activeData.publishDate = publishDate.value.atTime(publishHour.value, publishMinute.value)
+        activeData.scheduledPublish = scheduledPublish.isSelected
+        scheduleUpload(UploadJob(activeData, placeholderTable.items, uploadProgress.progressProperty(), progressText.textProperty()))
     }
 
     @FXML
@@ -86,19 +76,6 @@ class UploaderController : Initializable {
         placeholderTable.isDisable = true
         prepareButton.isDisable = true
         startButton.isDisable = true
-    }
-
-    @FXML
-    private fun handleTemplateOpen(event: ActionEvent) {
-        val templateEditor = Stage()
-        val scene = Scene(FXMLLoader.load(javaClass.getResource("TemplateEditor.fxml")))
-        scene.stylesheets.add(javaClass.getResource("application.css").toExternalForm())
-        templateEditor.scene = scene
-        templateEditor.title = "easyUp Template Editor"
-
-        templateEditor.initOwner(rootPane.scene.window)
-        templateEditor.initModality(Modality.APPLICATION_MODAL)
-        templateEditor.showAndWait()
     }
 
 }

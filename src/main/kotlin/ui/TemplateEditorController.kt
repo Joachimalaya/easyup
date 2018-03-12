@@ -2,7 +2,7 @@ package ui
 
 import config.activeConfig
 import config.jsonMapper
-import entity.UploadDataTemplate
+import entity.RawUploadTemplate
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.Alert
@@ -39,7 +39,7 @@ class TemplateEditorController : Initializable {
             val targetFile: File? = chooser.showOpenDialog(rootPane.scene.window)
 
             targetFile?.inputStream()?.use {
-                val template = jsonMapper.readValue(it, UploadDataTemplate::class.java)
+                val template = jsonMapper.readValue(it, RawUploadTemplate::class.java)
                 titleInput.text = template.titleTemplate
                 descriptionInput.text = template.descriptionTemplate
                 tagsInput.text = template.tags.joinToString(", ")
@@ -54,7 +54,7 @@ class TemplateEditorController : Initializable {
         val targetFile = chooser.showSaveDialog(rootPane.scene.window)
         if (targetFile != null) {
             val tags = tagsInput.text.split(",").map { it.trim() }.toTypedArray()
-            val template = UploadDataTemplate(titleInput.text, descriptionInput.text, "", tags)
+            val template = RawUploadTemplate(titleInput.text, descriptionInput.text, "", tags)
             targetFile.outputStream().use { jsonMapper.writeValue(it, template) }
             activeConfig.updateLastVisitedDirectory(targetFile)
         }

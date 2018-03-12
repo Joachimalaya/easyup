@@ -1,20 +1,33 @@
 package upload.resumable
 
 import entity.Placeholder
-import entity.UploadData
+import entity.UploadJob
+import entity.UploadTemplate
+import exec.appDirectory
 
-class RestorableUpload(var placeholders: List<Placeholder>, uploadData: UploadData) : UploadData() {
+class RestorableUpload() : UploadTemplate() {
+
+    var placeholders: List<Placeholder> = emptyList()
+
+    // need to provide empty constructor for deserialization
     init {
-        title = uploadData.title
-        description = uploadData.description
-        game = uploadData.game
-        tags = uploadData.tags
-        videoFile = uploadData.videoFile
-        thumbnailFile = uploadData.thumbnailFile
-        scheduledPublish = uploadData.scheduledPublish
-        publishDate = uploadData.publishDate
+        title = ""
+        description = ""
+        game = ""
+        tags = emptyArray()
+        // TODO: videoFile defaults to appDirectory; not that useful but also only temporary
+        videoFile = appDirectory
+        thumbnailFile = null
     }
 
-    constructor() : this(emptyList(), UploadData())
+    constructor(uploadJob: UploadJob) : this() {
+        title = uploadJob.template.title
+        description = uploadJob.template.description
+        game = uploadJob.template.game
+        tags = uploadJob.template.tags
+        videoFile = uploadJob.template.videoFile
+        thumbnailFile = uploadJob.template.thumbnailFile
+        placeholders = uploadJob.placeholders
+    }
 
 }

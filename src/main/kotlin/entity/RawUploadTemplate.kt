@@ -2,7 +2,7 @@ package entity
 
 import java.util.*
 
-data class UploadDataTemplate (var titleTemplate: String, var descriptionTemplate: String, var game: String, var tags: Array<String>) {
+data class RawUploadTemplate(var titleTemplate: String, var descriptionTemplate: String, var game: String, var tags: Array<String>) {
 
     // empty constructor needed for JSON deserialization
     constructor() : this("", "", "", arrayOf(""))
@@ -11,7 +11,7 @@ data class UploadDataTemplate (var titleTemplate: String, var descriptionTemplat
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as UploadDataTemplate
+        other as RawUploadTemplate
 
         if (titleTemplate != other.titleTemplate) return false
         if (descriptionTemplate != other.descriptionTemplate) return false
