@@ -13,6 +13,7 @@ import config.jsonMapper
 import entity.UploadJob
 import template.fill.PlaceholderUpdateService.replacePlaceholders
 import ui.MainWindow
+import upload.resumable.RestorableUpload
 import upload.resumable.unfinishedUploadDirectory
 import youtube.video.BinaryPrefix
 import youtube.video.PrivacyStatus
@@ -137,7 +138,7 @@ object UploadService {
 
     private fun persistUploadQueue() {
         val persistenceFile = File("$unfinishedUploadDirectory/queue.json")
-        jsonMapper.writeValue(persistenceFile, uploadQueue)
+        jsonMapper.writeValue(persistenceFile, uploadQueue.map { RestorableUpload(it) })
     }
 
     private fun tryToStartUpload() {
