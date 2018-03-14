@@ -16,7 +16,7 @@ import java.util.*
 class MainWindowController : Initializable {
 
     companion object {
-        // can't use a kotlin object, because javafx calls MainWindowController()
+        // can't use a kotlin object, because javafx will want to create a new instance
         var INSTANCE: MainWindowController? = null
     }
 

@@ -2,6 +2,7 @@ package config
 
 import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.google.common.io.Files
 import exec.appDirectory
@@ -22,7 +23,7 @@ private fun loadFromDefault(): ActiveConfig {
 }
 
 // jsonMapper setup
-val jsonMapper: ObjectMapper = ObjectMapper(JsonFactory()).registerModule(JavaTimeModule())
+val jsonMapper: ObjectMapper = ObjectMapper(JsonFactory()).registerModule(JavaTimeModule()).enable(SerializationFeature.INDENT_OUTPUT)
 
 val defaultConfigFile = acquireDefaultConfigFile()
 val activeConfig = loadFromDefault()
