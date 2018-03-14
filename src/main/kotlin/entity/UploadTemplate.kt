@@ -5,6 +5,9 @@ import java.io.File
 import java.time.LocalDateTime
 import java.util.*
 
+/**
+ * Structure of a template that may be edited with the template editor.
+ */
 open class UploadTemplate(var title: String, var description: String, var game: String, var tags: Array<String>, var videoFile: File, var thumbnailFile: File?, var publishDate: LocalDateTime, var scheduledPublish: Boolean) {
 
     constructor(templateRaw: RawUploadTemplate, videoFile: File, thumbnailFile: File?) : this(templateRaw.titleTemplate, templateRaw.descriptionTemplate, templateRaw.game, templateRaw.tags, videoFile, thumbnailFile, LocalDateTime.now(), false)

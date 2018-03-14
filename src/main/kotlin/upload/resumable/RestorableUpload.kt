@@ -5,6 +5,9 @@ import entity.UploadJob
 import entity.UploadTemplate
 import exec.appDirectory
 
+/**
+ * A serializable and deserializable collection of data needed to restore an unfinished UploadJob.
+ */
 class RestorableUpload() : UploadTemplate() {
 
     var placeholders: List<Placeholder> = emptyList()

@@ -2,6 +2,9 @@ package entity
 
 import java.util.*
 
+/**
+ *
+ */
 data class RawUploadTemplate(var titleTemplate: String, var descriptionTemplate: String, var game: String, var tags: Array<String>) {
 
     // empty constructor needed for JSON deserialization
