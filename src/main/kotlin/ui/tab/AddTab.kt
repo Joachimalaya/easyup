@@ -6,6 +6,9 @@ import javafx.scene.control.Button
 import javafx.scene.control.Tab
 import ui.MainWindowController
 
+/**
+ * A special tab that allows addition of other tabs with a button in this tab.
+ */
 class AddTab : Tab() {
 
     init {
