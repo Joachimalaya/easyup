@@ -14,7 +14,7 @@ import entity.UploadJob
 import template.fill.PlaceholderUpdateService.replacePlaceholders
 import ui.MainWindow
 import upload.resumable.RestorableUpload
-import upload.resumable.unfinishedUploadDirectory
+import upload.resumable.UnfinishedUploadLoadService
 import youtube.video.BinaryPrefix
 import youtube.video.PrivacyStatus
 import youtube.video.numBytes
@@ -37,6 +37,7 @@ object UploadService {
     var uploading = false
         private set
 
+    val UPLOAD_QUEUE_FILE = File("${UnfinishedUploadLoadService.UNFINISHED_UPLOAD_DIRECTORY}/queue.json")
     private val uploadQueue = LinkedList<UploadJob>()
 
     private val uploadBufferSize = numBytes(512, BinaryPrefix.MEBIBYTE)
@@ -49,8 +50,8 @@ object UploadService {
             video.status = VideoStatus()
             video.status.privacyStatus = PrivacyStatus.PRIVATE.privacyStatus
 
-            if (uploadJob.template.scheduledPublish) {
-                publishDateToGoogleDateTime(uploadJob.template.publishDate)
+            if (uploadJob.scheduledPublish) {
+                publishDateToGoogleDateTime(uploadJob.publishDate)
             }
 
             video.snippet = VideoSnippet()
@@ -137,8 +138,7 @@ object UploadService {
     }
 
     private fun persistUploadQueue() {
-        val persistenceFile = File("$unfinishedUploadDirectory/queue.json")
-        jsonMapper.writeValue(persistenceFile, uploadQueue.map { RestorableUpload(it) })
+        jsonMapper.writeValue(UPLOAD_QUEUE_FILE, uploadQueue.map { RestorableUpload(it) })
     }
 
     private fun tryToStartUpload() {

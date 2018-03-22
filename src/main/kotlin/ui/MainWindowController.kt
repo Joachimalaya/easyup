@@ -44,7 +44,7 @@ class MainWindowController : Initializable {
     }
 
     fun addTab(tab: Tab) {
-        tabPane.tabs.add(tab)
+        tabPane.tabs.add(tabPane.tabs.size - 1, tab)
         tabPane.selectionModel.select(tab)
     }
 

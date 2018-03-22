@@ -18,10 +18,8 @@
     <center>
         <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" fx:id="tabPane">
             <tabs>
+                <fx:include source="Uploader.fxml"/>
                 <AddTab/>
-                <Tab text="new upload">
-                    <fx:include source="Uploader.fxml"/>
-                </Tab>
             </tabs>
         </TabPane>
     </center>

@@ -4,7 +4,6 @@ import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.fxml.Initializable
-import javafx.scene.Parent
 import javafx.scene.control.Tab
 import javafx.scene.layout.Pane
 import java.net.URL
@@ -21,8 +20,7 @@ class HomeTabController : Initializable {
     }
 
     fun addUploadAction(event: ActionEvent) {
-        val uploadTab = Tab("new upload")
-        uploadTab.content = FXMLLoader.load<Parent>(javaClass.getResource("Uploader.fxml"))
+        val uploadTab = FXMLLoader.load<Tab>(javaClass.getResource("Uploader.fxml"))
 
         MainWindowController.INSTANCE?.addTab(uploadTab)
     }

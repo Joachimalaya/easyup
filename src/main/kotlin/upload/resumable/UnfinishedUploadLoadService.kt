@@ -9,15 +9,18 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import template.fill.PlaceholderUpdateService
 import ui.alert.SizedAlert
+import upload.UploadService
 import java.io.File
-
-val unfinishedUploadDirectory = File("$appDirectory/uploads")
 
 // TODO: currently unused; need to open tabs for every unfinished upload
 object UnfinishedUploadLoadService {
 
+    val UNFINISHED_UPLOAD_DIRECTORY = File("$appDirectory/uploads")
+
     private fun findUnfinishedUpload(): File? =
-            unfinishedUploadDirectory.listFiles({ _, name -> name.endsWith(".json") }).firstOrNull()
+            UNFINISHED_UPLOAD_DIRECTORY.listFiles({ _, name -> name.endsWith(".json") }).firstOrNull()
+
+    fun loadUnfinishedUploads(): List<RestorableUpload> = jsonMapper.readValue(UploadService.UPLOAD_QUEUE_FILE, Array<RestorableUpload>::class.java).asList()
 
     fun loadUnfinishedUpload(titlePreview: TextField, descriptionPreview: TextArea, tags: TextField, thumbnailPreview: ImageView, placeholderTable: TableView<Placeholder>): UploadTemplate {
         val unfinishedUpload = findUnfinishedUpload()

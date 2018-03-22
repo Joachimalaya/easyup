@@ -1,10 +1,9 @@
 package ui.tab
 
-import javafx.fxml.FXMLLoader
-import javafx.scene.Parent
 import javafx.scene.control.Button
 import javafx.scene.control.Tab
-import ui.MainWindowController
+import javafx.scene.paint.Color
+import javafx.scene.paint.Paint
 
 /**
  * A special tab that allows addition of other tabs with a button in this tab.
@@ -13,15 +12,16 @@ class AddTab : Tab() {
 
     init {
         isClosable = false
+        isDisable = true
 
-        graphic = Button("+")
+
+        // TODO: style add button to not look disabled; just want the tab not selectable
+        val addButton = Button("+")
+        addButton.textFill = Paint.valueOf(Color.LIGHTGREEN.toString())
+
+        graphic = addButton
         graphic.setOnMouseClicked {
-            val uploadTab = Tab("new upload")
-            uploadTab.content = FXMLLoader.load<Parent>(javaClass.getResource("../Uploader.fxml"))
-            MainWindowController.INSTANCE?.addTab(uploadTab)
+            AddUploadTabService.addUploadTab()
         }
-
-        content = FXMLLoader.load<Parent>(javaClass.getResource("../HomeTab.fxml"))
     }
-
 }
