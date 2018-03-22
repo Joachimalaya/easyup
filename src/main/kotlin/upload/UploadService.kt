@@ -103,7 +103,7 @@ object UploadService {
                     thumbnailSet.execute()
                 }
                 // remove entry from queue and update persisted data
-                uploadQueue.pop()
+                uploadQueue.pollLast()
                 persistUploadQueue()
 
                 // start next queued upload
@@ -143,7 +143,7 @@ object UploadService {
 
     private fun tryToStartUpload() {
         if (!uploading && !uploadQueue.isEmpty()) {
-            beginUpload(uploadQueue.peek())
+            beginUpload(uploadQueue.peekLast())
         }
     }
 
