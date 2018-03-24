@@ -10,6 +10,8 @@ import javafx.scene.control.TabPane
 import javafx.scene.layout.Pane
 import javafx.stage.Modality
 import javafx.stage.Stage
+import ui.tab.AddUploadTabService
+import upload.resumable.UnfinishedUploadLoadService
 import java.net.URL
 import java.util.*
 
@@ -28,6 +30,8 @@ class MainWindowController : Initializable {
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         INSTANCE = this
+
+        AddUploadTabService.addUploadTab(UnfinishedUploadLoadService.loadUnfinishedUploads())
     }
 
     @FXML

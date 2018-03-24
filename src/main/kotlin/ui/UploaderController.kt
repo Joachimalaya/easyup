@@ -73,14 +73,16 @@ class UploaderController : Initializable {
             placeholderTable.items.addAll(restorable.placeholders)
 
             restorable.thumbnailFile?.inputStream()?.use { thumbnailPreview.image = Image(it) }
-        } else {
-            // set publish time
-            val now = LocalDateTime.now()
-            publishDate.value = now.toLocalDate()
-            publishHour.valueFactory.value = now.hour
-            publishMinute.valueFactory.value = now.minute
+
 
         }
+
+        // set publish time
+        val now = LocalDateTime.now()
+        publishDate.value = now.toLocalDate()
+        publishHour.valueFactory.value = now.hour
+        publishMinute.valueFactory.value = now.minute
+
     }
 
     @FXML

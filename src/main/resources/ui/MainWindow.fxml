@@ -18,7 +18,6 @@
     <center>
         <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" fx:id="tabPane">
             <tabs>
-                <fx:include source="Uploader.fxml"/>
                 <AddTab/>
             </tabs>
         </TabPane>
