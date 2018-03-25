@@ -31,7 +31,7 @@ class MainWindowController : Initializable {
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         INSTANCE = this
 
-        AddUploadTabService.addUploadTab(UnfinishedUploadLoadService.loadUnfinishedUploads())
+        AddUploadTabService.addUploadTabs(UnfinishedUploadLoadService.loadUnfinishedUploads())
     }
 
     @FXML

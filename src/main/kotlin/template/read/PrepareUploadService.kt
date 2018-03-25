@@ -5,15 +5,12 @@ import config.activeConfig
 import config.jsonMapper
 import entity.Placeholder
 import entity.RawUploadTemplate
-import entity.UploadTemplate
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
-import javafx.scene.control.TableView
-import javafx.scene.control.TextInputControl
-import javafx.scene.image.Image
-import javafx.scene.image.ImageView
 import javafx.stage.FileChooser
 import javafx.stage.Window
+import ui.tab.AddUploadTabService
+import upload.resumable.RestorableUpload
 import java.io.File
 import java.util.regex.Pattern
 
@@ -24,30 +21,19 @@ val formatPattern = Pattern.compile("\\{(\\w*)}")!!
  */
 object PrepareUploadService {
 
-    fun handleLoadAction(window: Window, titlePreview: TextInputControl, descriptionPreview: TextInputControl, placeholderTable: TableView<Placeholder>, tagsPreview: TextInputControl, thumbnailPreview: ImageView): UploadTemplate {
+    fun handleLoadAction(window: Window) {
         val videoFile = askForVideoFile(window)
         val template = askForTemplate(window)
         val thumbnailFile = askForThumbnail(window)
 
         if (videoFile == null || template == null) {
             Alert(Alert.AlertType.ERROR, "You need to provide both a video file and a template.", ButtonType.OK).showAndWait()
-            return UploadTemplate()
+            return
         }
 
-        thumbnailFile?.inputStream()?.use { thumbnailPreview.image = Image(it) }
+        val uploadTemplate = RestorableUpload(template, videoFile, thumbnailFile, findAllPlaceholders(template.titleTemplate) + findAllPlaceholders(template.descriptionTemplate))
 
-        titlePreview.text = template.titleTemplate
-        descriptionPreview.text = template.descriptionTemplate
-        tagsPreview.text = template.tags.joinToString(", ")
-
-        placeholderTable.items.addAll((findAllPlaceholders(template.titleTemplate) + findAllPlaceholders(template.descriptionTemplate)).distinct())
-
-        titlePreview.isDisable = false
-        descriptionPreview.isDisable = false
-        placeholderTable.isDisable = false
-        tagsPreview.isDisable = false
-
-        return UploadTemplate(template, videoFile, thumbnailFile)
+        AddUploadTabService.addUploadTab(uploadTemplate)
     }
 
     private fun findAllPlaceholders(template: String): List<Placeholder> {
@@ -114,6 +100,5 @@ object PrepareUploadService {
     private val supportedThumbnailFormats = listOf(FileChooser.ExtensionFilter("PNG", "*.png"))
 
     private val allFilesFilter = FileChooser.ExtensionFilter("all files", "*.*")
-
 
 }

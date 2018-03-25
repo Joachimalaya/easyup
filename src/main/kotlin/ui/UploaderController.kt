@@ -12,7 +12,6 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.text.Text
 import template.fill.PlaceholderUpdateService.updatePlaceholders
-import template.read.PrepareUploadService.handleLoadAction
 import upload.UploadService.scheduleUpload
 import upload.resumable.RestorableUpload
 import java.net.URL
@@ -23,7 +22,7 @@ import java.util.*
 class UploaderController : Initializable {
 
     companion object {
-        var toRestore: List<RestorableUpload> = emptyList()
+        var toRestore = RestorableUpload()
     }
 
     @FXML
@@ -60,10 +59,8 @@ class UploaderController : Initializable {
     private var uploadTemplate = UploadTemplate()
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
-        if (toRestore.isNotEmpty()) {
             // restore data from pool
-            val restorable = toRestore[0]
-            toRestore -= restorable
+        val restorable = toRestore
 
             uploadTemplate = UploadTemplate(restorable)
 
@@ -74,21 +71,13 @@ class UploaderController : Initializable {
 
             restorable.thumbnailFile?.inputStream()?.use { thumbnailPreview.image = Image(it) }
 
-
-        }
-
         // set publish time
         val now = LocalDateTime.now()
         publishDate.value = now.toLocalDate()
         publishHour.valueFactory.value = now.hour
         publishMinute.valueFactory.value = now.minute
 
-    }
-
-    @FXML
-    private fun handlePrepareAction(event: ActionEvent) {
-        val window = (event.source as Control).scene.window
-        uploadTemplate = handleLoadAction(window, titlePreview, descriptionPreview, placeholderTable, tagsPreview, thumbnailPreview)
+        tab.textProperty().bind(titlePreview.textProperty())
     }
 
     @FXML

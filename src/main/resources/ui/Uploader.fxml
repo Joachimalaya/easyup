@@ -19,13 +19,9 @@
         </padding>
 
         <children>
-            <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.rowIndex="1">
-                <Button fx:id="prepareButton" maxWidth="Infinity" onAction="#handlePrepareAction"
-                        text="Prepare new upload"/>
-                <Button fx:id="startButton" maxWidth="Infinity" onAction="#handleUploadStartAction"
-                        text="Start upload"/>
-            </VBox>
-            <TableView fx:id="placeholderTable" disable="true" editable="true" GridPane.columnIndex="1"
+            <Button fx:id="startButton" GridPane.rowIndex="1" maxWidth="Infinity" onAction="#handleUploadStartAction"
+                    text="Start upload"/>
+            <TableView fx:id="placeholderTable" editable="true" GridPane.columnIndex="1"
                        GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
                 <columns>
                     <TableColumn prefWidth="${placeholderTable.width*0.3}" text="Key">
@@ -49,17 +45,17 @@
             </TableView>
 
             <Text text="Title" GridPane.rowIndex="2" GridPane.valignment="TOP"/>
-            <TextField fx:id="titlePreview" disable="true" editable="false" GridPane.columnIndex="1"
+            <TextField fx:id="titlePreview" editable="false" GridPane.columnIndex="1"
                        GridPane.columnSpan="2147483647" GridPane.rowIndex="2"/>
 
             <Text text="Description" GridPane.rowIndex="3" GridPane.valignment="TOP"/>
-            <TextArea fx:id="descriptionPreview" disable="true" editable="false" wrapText="true"
+            <TextArea fx:id="descriptionPreview" editable="false" wrapText="true"
                       GridPane.columnIndex="1"
                       GridPane.columnSpan="2147483647" GridPane.rowIndex="3"/>
 
 
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tags" GridPane.rowIndex="5"/>
-            <TextField fx:id="tagsPreview" disable="true" editable="false" prefWidth="205.0" GridPane.columnIndex="1"
+            <TextField fx:id="tagsPreview" editable="false" prefWidth="205.0" GridPane.columnIndex="1"
                        GridPane.columnSpan="2147483647" GridPane.rowIndex="5"/>
 
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Thumbnail" GridPane.rowIndex="6"
