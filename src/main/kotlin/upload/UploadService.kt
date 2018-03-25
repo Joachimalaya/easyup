@@ -108,6 +108,8 @@ object UploadService {
 
                 // start next queued upload
                 uploading = false
+                uploadJob.uploadTab.tabPane.tabs.remove(uploadJob.uploadTab)
+
                 tryToStartUpload()
             }
         }.start()
