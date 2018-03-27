@@ -29,8 +29,6 @@ class UploaderController : Initializable {
     lateinit var tab: Tab
 
     @FXML
-    lateinit var prepareButton: Button
-    @FXML
     lateinit var startButton: Button
 
     @FXML
@@ -94,7 +92,6 @@ class UploaderController : Initializable {
 
     private fun lockUI() {
         placeholderTable.isDisable = true
-        prepareButton.isDisable = true
         startButton.isDisable = true
     }
 

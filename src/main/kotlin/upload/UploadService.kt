@@ -11,6 +11,7 @@ import com.google.api.services.youtube.model.VideoStatus
 import com.google.common.base.Stopwatch
 import config.jsonMapper
 import entity.UploadJob
+import javafx.application.Platform
 import template.fill.PlaceholderUpdateService.replacePlaceholders
 import ui.MainWindow
 import upload.resumable.RestorableUpload
@@ -105,7 +106,7 @@ object UploadService {
 
                 // start next queued upload
                 uploading = false
-                uploadJob.uploadTab.tabPane.tabs.remove(uploadJob.uploadTab)
+                Platform.runLater { uploadJob.uploadTab.tabPane.tabs.remove(uploadJob.uploadTab) }
 
                 tryToStartUpload()
             }
