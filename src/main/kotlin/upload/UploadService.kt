@@ -97,9 +97,6 @@ object UploadService {
                 uploadJob.template.thumbnailFile?.inputStream().use {
                     val thumbnailSet = Authorization.connection.thumbnails().set(returnedVideo.id, InputStreamContent("image/png", it))
                     thumbnailSet.mediaHttpUploader.isDirectUploadEnabled = false
-                    thumbnailSet.mediaHttpUploader.progressListener = MediaHttpUploaderProgressListener {
-                        // TODO: implement simple notification
-                    }
                     thumbnailSet.execute()
                 }
                 // remove entry from queue and update persisted data
