@@ -1,0 +1,11 @@
+.add-tab:disabled {
+    -fx-opacity: 1.0;
+}
+
+.add-tab:disabled .button {
+    -fx-background-color: transparent;
+}
+
+.add-tab:disabled .button:hover {
+    -fx-text-fill: blue;
+}

@@ -21,7 +21,10 @@ class MainWindow : Application() {
     }
 
     private val layoutPath = "MainWindow.fxml"
-    private val cssConfig = "application.css"
+
+    private val cssFiles = listOf(
+            javaClass.getResource("application.css").toExternalForm(),
+            javaClass.getResource("addTab.css").toExternalForm())
 
     var windowStage: Stage? = null
 
@@ -31,7 +34,9 @@ class MainWindow : Application() {
         windowStage = primaryStage
         val root = FXMLLoader.load<Parent>(javaClass.getResource(layoutPath))
         val scene = Scene(root)
-        scene.stylesheets.add(javaClass.getResource(cssConfig).toExternalForm())
+
+        cssFiles.forEach { scene.stylesheets.add(it) }
+
         primaryStage.scene = scene
         primaryStage.minWidth = 720.0
         primaryStage.minHeight = 640.0

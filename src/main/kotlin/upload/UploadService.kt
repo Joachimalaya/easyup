@@ -122,12 +122,12 @@ object UploadService {
             uploader.numBytesUploaded.toDouble() / uploadedFile.length().toDouble()
 
     fun progressFeedback(ratioDone: Double, elapsedMillis: Long): String {
-        val eta = Duration.ofMillis((elapsedMillis / ratioDone - elapsedMillis).roundToLong()).seconds
+        val eta = eta(elapsedMillis, ratioDone)
         return String.format("%02.1f%% uploaded; ETA: %d:%02d:%02d", ratioDone * 100, eta / 3600, (eta % 3600) / 60, (eta % 60))
     }
 
     fun shortProgressFeedback(ratioDone: Double, elapsedMillis: Long): String {
-        val eta = Duration.ofMillis((elapsedMillis / ratioDone - elapsedMillis).roundToLong()).seconds
+        val eta = eta(elapsedMillis, ratioDone)
         return String.format("%01.0f%% %d:%02d", ratioDone * 100, eta / 3600, (eta % 3600) / 60, (eta % 60))
     }
 
@@ -136,6 +136,8 @@ object UploadService {
         persistUploadQueue()
         tryToStartUpload()
     }
+
+    private fun eta(elapsedMillis: Long, ratioDone: Double): Long = Duration.ofMillis((elapsedMillis / ratioDone - elapsedMillis).roundToLong()).seconds
 
     private fun persistUploadQueue() {
         jsonMapper.writeValue(UPLOAD_QUEUE_FILE, uploadQueue.map { RestorableUpload(it) })

@@ -2,8 +2,6 @@ package ui.tab
 
 import javafx.scene.control.Button
 import javafx.scene.control.Tab
-import javafx.scene.paint.Color
-import javafx.scene.paint.Paint
 import template.read.PrepareUploadService
 
 /**
@@ -15,11 +13,10 @@ class AddTab : Tab() {
         isClosable = false
         isDisable = true
 
-        text = "add upload"
+        styleClass.add("add-tab")
 
         // TODO: style add button to not look disabled; just want the tab not selectable
         val addButton = Button("+")
-        addButton.textFill = Paint.valueOf(Color.LIGHTGREEN.toString())
 
         graphic = addButton
         addButton.setOnMouseClicked {
@@ -29,4 +26,6 @@ class AddTab : Tab() {
 
         }
     }
+
+
 }

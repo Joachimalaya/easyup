@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <Tab xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.UploaderController"
-     fx:id="tab" text="new upload">
+     fx:id="tab" text="new upload" closable="true">
     <GridPane hgap="5" styleClass="root" vgap="5">
 
         <padding>

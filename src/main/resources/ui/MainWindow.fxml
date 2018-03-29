@@ -16,7 +16,7 @@
         </MenuBar>
     </top>
     <center>
-        <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" fx:id="tabPane">
+        <TabPane tabClosingPolicy="ALL_TABS" BorderPane.alignment="CENTER" fx:id="tabPane">
             <tabs>
                 <AddTab/>
             </tabs>
