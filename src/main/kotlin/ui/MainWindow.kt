@@ -49,7 +49,7 @@ class MainWindow : Application() {
             activeConfig.writeToDefault()
 
             // check whether upload is running before showing this
-            if(UploadService.uploading) {
+            if (UploadService.uploading()) {
                 // security question for user
                 val reallyClose = SizedAlert(Alert.AlertType.WARNING, "Closing the application while an upload is running means all progress will be lost.\nStill quit?", ButtonType.YES, ButtonType.NO).showAndWait()
                 if (reallyClose.isPresent && reallyClose.get() == ButtonType.YES) {

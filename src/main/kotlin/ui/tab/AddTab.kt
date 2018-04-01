@@ -15,17 +15,14 @@ class AddTab : Tab() {
 
         styleClass.add("add-tab")
 
-        // TODO: style add button to not look disabled; just want the tab not selectable
         val addButton = Button("+")
 
         graphic = addButton
         addButton.setOnMouseClicked {
-            // TODO: load template
+            // load template
             val window = addButton.scene.window
             PrepareUploadService.handleLoadAction(window)
 
         }
     }
-
-
 }

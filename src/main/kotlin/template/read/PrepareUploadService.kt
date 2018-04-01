@@ -9,6 +9,7 @@ import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.stage.FileChooser
 import javafx.stage.Window
+import ui.alert.SizedAlert
 import ui.tab.AddUploadTabService
 import upload.resumable.RestorableUpload
 import java.io.File
@@ -27,7 +28,7 @@ object PrepareUploadService {
         val thumbnailFile = askForThumbnail(window)
 
         if (videoFile == null || template == null) {
-            Alert(Alert.AlertType.ERROR, "You need to provide both a video file and a template.", ButtonType.OK).showAndWait()
+            SizedAlert(Alert.AlertType.ERROR, "You need to provide both a video file and a template.", ButtonType.OK).showAndWait()
             return
         }
 

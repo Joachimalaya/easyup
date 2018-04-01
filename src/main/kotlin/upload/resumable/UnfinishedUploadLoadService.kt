@@ -12,7 +12,7 @@ object UnfinishedUploadLoadService {
     fun loadUnfinishedUploads(): List<RestorableUpload> = jsonMapper.readValue(UploadService.UPLOAD_QUEUE_FILE, Array<RestorableUpload>::class.java).asList()
 
     private fun deleteUnfinishedUpload() {
-        if (!UploadService.uploading) {
+        if (!UploadService.uploading()) {
             // TODO: delete partial upload from YouTube
 
         }

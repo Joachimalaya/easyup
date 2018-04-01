@@ -4,6 +4,7 @@ import entity.Placeholder
 import entity.UploadJob
 import entity.UploadTemplate
 import javafx.event.ActionEvent
+import javafx.event.Event
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.*
@@ -12,6 +13,9 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.text.Text
 import template.fill.PlaceholderUpdateService.updatePlaceholders
+import ui.alert.SizedAlert
+import upload.UploadService
+import upload.UploadService.removeFromQueueWithTab
 import upload.UploadService.scheduleUpload
 import upload.resumable.RestorableUpload
 import java.net.URL
@@ -76,6 +80,17 @@ class UploaderController : Initializable {
         publishMinute.valueFactory.value = now.minute
 
         tab.textProperty().bind(titlePreview.textProperty())
+    }
+
+    @FXML
+    private fun handleCloseRequest(event: Event) {
+        if (UploadService.uploadingTab(tab)) {
+            // TODO: implement
+            SizedAlert(Alert.AlertType.ERROR, "Removing the currently running upload is not yet supported.", ButtonType.OK)
+        } else {
+            // TODO: implement
+            removeFromQueueWithTab(tab)
+        }
     }
 
     @FXML

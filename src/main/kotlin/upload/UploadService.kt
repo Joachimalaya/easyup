@@ -12,6 +12,7 @@ import com.google.common.base.Stopwatch
 import config.jsonMapper
 import entity.UploadJob
 import javafx.application.Platform
+import javafx.scene.control.Tab
 import template.fill.PlaceholderUpdateService.replacePlaceholders
 import ui.MainWindow
 import upload.resumable.RestorableUpload
@@ -35,12 +36,10 @@ object UploadService {
 
     var cancelUpload = false
 
-    var uploading = false
-        private set
-
     val UPLOAD_QUEUE_FILE = File("${UnfinishedUploadLoadService.UNFINISHED_UPLOAD_DIRECTORY}/queue.json")
-    private val uploadQueue = LinkedList<UploadJob>()
 
+    private val uploadQueue = LinkedList<UploadJob>()
+    private var currentUpload: UploadJob? = null
     private val uploadBufferSize = numBytes(512, BinaryPrefix.MEBIBYTE)
 
     private fun beginUpload(uploadJob: UploadJob) {
@@ -91,7 +90,6 @@ object UploadService {
                     }
                 }
 
-                uploading = true
                 val returnedVideo = videoInsert.execute()
 
                 // add thumbnailFile
@@ -100,14 +98,9 @@ object UploadService {
                     thumbnailSet.mediaHttpUploader.isDirectUploadEnabled = false
                     thumbnailSet.execute()
                 }
-                // remove entry from queue and update persisted data
-                uploadQueue.pollLast()
-                persistUploadQueue()
 
                 // start next queued upload
-                uploading = false
                 Platform.runLater { uploadJob.uploadTab.tabPane.tabs.remove(uploadJob.uploadTab) }
-
                 tryToStartUpload()
             }
         }.start()
@@ -137,16 +130,25 @@ object UploadService {
         tryToStartUpload()
     }
 
-    private fun eta(elapsedMillis: Long, ratioDone: Double): Long = Duration.ofMillis((elapsedMillis / ratioDone - elapsedMillis).roundToLong()).seconds
+    private fun eta(elapsedMillis: Long, ratioDone: Double) = Duration.ofMillis((elapsedMillis / ratioDone - elapsedMillis).roundToLong()).seconds
 
     private fun persistUploadQueue() {
-        jsonMapper.writeValue(UPLOAD_QUEUE_FILE, uploadQueue.map { RestorableUpload(it) })
+        val toPersist = when (currentUpload) {
+            null -> uploadQueue
+            else -> uploadQueue + currentUpload!!
+        }
+        jsonMapper.writeValue(UPLOAD_QUEUE_FILE, toPersist.map { RestorableUpload(it) })
     }
 
     private fun tryToStartUpload() {
-        if (!uploading && !uploadQueue.isEmpty()) {
-            beginUpload(uploadQueue.peekLast())
+        if (!uploading() && !uploadQueue.isEmpty()) {
+            beginUpload(uploadQueue.pollLast())
         }
     }
 
+    fun uploading() = currentUpload != null
+
+    fun uploadingTab(tab: Tab) = currentUpload?.uploadTab == tab
+
+    fun removeFromQueueWithTab(tab: Tab) = uploadQueue.removeIf { it.uploadTab == tab }
 }
