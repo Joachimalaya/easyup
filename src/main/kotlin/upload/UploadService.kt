@@ -43,6 +43,7 @@ object UploadService {
     private val uploadBufferSize = numBytes(512, BinaryPrefix.MEBIBYTE)
 
     private fun beginUpload(uploadJob: UploadJob) {
+        currentUpload = uploadJob
         // started in new Thread to prevent UI hang
         Thread {
             val video = Video()
@@ -101,6 +102,8 @@ object UploadService {
 
                 // start next queued upload
                 Platform.runLater { uploadJob.uploadTab.tabPane.tabs.remove(uploadJob.uploadTab) }
+                currentUpload = null
+                persistUploadQueue()
                 tryToStartUpload()
             }
         }.start()
