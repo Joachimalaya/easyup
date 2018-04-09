@@ -15,6 +15,7 @@ import javafx.application.Platform
 import javafx.scene.control.Tab
 import template.fill.PlaceholderUpdateService.replacePlaceholders
 import ui.MainWindow
+import ui.notification.Notification
 import upload.resumable.RestorableUpload
 import upload.resumable.UnfinishedUploadLoadService
 import youtube.video.BinaryPrefix
@@ -100,7 +101,10 @@ object UploadService {
                 }
 
                 // start next queued upload
-                Platform.runLater { uploadJob.uploadTab.tabPane.tabs.remove(uploadJob.uploadTab) }
+                Platform.runLater {
+                    uploadJob.uploadTab.tabPane.tabs.remove(uploadJob.uploadTab)
+                    Notification("upload of ${video.snippet.title} done")
+                }
                 tryToStartUpload()
             }
         }.start()
