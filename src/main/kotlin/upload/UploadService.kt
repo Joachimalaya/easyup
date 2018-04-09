@@ -104,7 +104,7 @@ object UploadService {
                 // start next queued upload
                 Platform.runLater {
                     uploadJob.uploadTab.tabPane.tabs.remove(uploadJob.uploadTab)
-                    Notification("upload of ${video.snippet.title} done")
+                    Notification("upload of ${video.snippet.title} done").showAndFadeOut(10, 5)
                 }
                 currentUpload = null
                 persistUploadQueue()
