@@ -8,7 +8,7 @@ val appDirectory = File(System.getProperty("user.home") + "/.easyUp")
 
 fun main(args: Array<String>) {
     // ensure that application directory exists
-    appDirectory.createNewFile()
+    appDirectory.mkdirs()
 
     MainWindow().launchApp(args)
 }
