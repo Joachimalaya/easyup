@@ -7,7 +7,7 @@ import upload.resumable.RestorableUpload
 
 object AddUploadTabService {
 
-    private val uploaderPath = javaClass.getResource("../Uploader.fxml")
+    private val uploaderPath = javaClass.getResource("Uploader.fxml")
 
     fun addUploadTab(uploadData: RestorableUpload) {
         UploaderController.toRestore = uploadData
