@@ -88,6 +88,7 @@ object UploadService {
                         }
                         MediaHttpUploader.UploadState.MEDIA_COMPLETE -> {
                             uploadJob.progressText.value = "upload complete"
+                            MainWindow.INSTANCE?.resetTitle()
                         }
                     }
                 }
@@ -123,12 +124,12 @@ object UploadService {
 
     fun progressFeedback(ratioDone: Double, elapsedMillis: Long): String {
         val eta = eta(elapsedMillis, ratioDone)
-        return String.format("%02.1f%% uploaded; ETA: %d:%02d:%02d", ratioDone * 100, eta / 3600, (eta % 3600) / 60, (eta % 60))
+        return "%02.1f%% uploaded; ETA: %d:%02d:%02d".format(ratioDone * 100, eta / 3600, (eta % 3600) / 60, (eta % 60))
     }
 
     fun shortProgressFeedback(ratioDone: Double, elapsedMillis: Long): String {
         val eta = eta(elapsedMillis, ratioDone)
-        return String.format("%01.0f%% %d:%02d", ratioDone * 100, eta / 3600, (eta % 3600) / 60, (eta % 60))
+        return "%01.0f%% %d:%02d".format(ratioDone * 100, eta / 3600, (eta % 3600) / 60, (eta % 60))
     }
 
     fun scheduleUpload(job: UploadJob) {

@@ -59,7 +59,6 @@ class Notification(message: String) : Stage(StageStyle.UNDECORATED) {
             Platform.runLater { close() }
 
         }.start()
-        // TODO: implement
     }
 
 }

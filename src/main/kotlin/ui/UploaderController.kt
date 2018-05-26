@@ -61,17 +61,17 @@ class UploaderController : Initializable {
     private var uploadTemplate = UploadTemplate()
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
-            // restore data from pool
+        // restore data from pool
         val restorable = toRestore
 
-            uploadTemplate = UploadTemplate(restorable)
+        uploadTemplate = UploadTemplate(restorable)
 
-            titlePreview.text = restorable.title
-            descriptionPreview.text = restorable.description
-            tagsPreview.text = restorable.tags.joinToString(", ")
-            placeholderTable.items.addAll(restorable.placeholders)
+        titlePreview.text = restorable.title
+        descriptionPreview.text = restorable.description
+        tagsPreview.text = restorable.tags.joinToString(", ")
+        placeholderTable.items.addAll(restorable.placeholders)
 
-            restorable.thumbnailFile?.inputStream()?.use { thumbnailPreview.image = Image(it) }
+        restorable.thumbnailFile?.inputStream()?.use { thumbnailPreview.image = Image(it) }
 
         // set publish time
         val now = LocalDateTime.now()
@@ -86,7 +86,7 @@ class UploaderController : Initializable {
     private fun handleCloseRequest(event: Event) {
         if (UploadService.uploadingTab(tab)) {
             // TODO: implement
-            SizedAlert(Alert.AlertType.ERROR, "Removing the currently running upload is not yet supported.", ButtonType.OK)
+            SizedAlert(Alert.AlertType.ERROR, "Removing the currently running upload is not supported.", ButtonType.OK)
         } else {
             // TODO: implement
             removeFromQueueWithTab(tab)

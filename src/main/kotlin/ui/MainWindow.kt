@@ -18,6 +18,8 @@ class MainWindow : Application() {
     companion object {
         // can't use a kotlin object, because javafx calls MainWindow()
         var INSTANCE: MainWindow? = null
+
+        val TITLEPREFIX = "easyUp"
     }
 
     private val layoutPath = "MainWindow.fxml"
@@ -42,7 +44,7 @@ class MainWindow : Application() {
         primaryStage.minHeight = 640.0
         primaryStage.isMaximized = true
         primaryStage.show()
-        primaryStage.title = "easyUp"
+        primaryStage.title = TITLEPREFIX
 
         primaryStage.onCloseRequest = EventHandler {
             // write always; does no harm
@@ -69,7 +71,16 @@ class MainWindow : Application() {
      * This method is safe to call from non-event Threads.
      */
     fun changeTitle(titleSuffix: String) {
-        Platform.runLater { windowStage?.title = "easyUp - $titleSuffix" }
+        Platform.runLater { windowStage?.title = "$TITLEPREFIX - $titleSuffix" }
+    }
+
+    /**
+     * Reset the title of the application to the default.
+     *
+     * This method is safe to call from non-event Threads.
+     */
+    fun resetTitle() {
+        Platform.runLater { windowStage?.title = TITLEPREFIX }
     }
 
     fun launchApp(args: Array<String>) {
