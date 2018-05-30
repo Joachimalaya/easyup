@@ -71,14 +71,14 @@
             <Spinner fx:id="publishMinute" amountToStepBy="5" editable="true" max="59" min="0" GridPane.columnIndex="4"
                      GridPane.rowIndex="4"/>
 
-            <Button fx:id="startButton" GridPane.rowIndex="7" maxWidth="Infinity" onAction="#handleUploadStartAction"
-                    text="Start upload"/>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Upload Progress" GridPane.rowIndex="7"
-                  GridPane.columnIndex="1"/>
-            <ProgressBar fx:id="uploadProgress" prefWidth="200.0" progress="0.0" GridPane.columnIndex="2"
+                  GridPane.columnIndex="0"/>
+            <ProgressBar fx:id="uploadProgress" prefWidth="200.0" progress="0.0" GridPane.columnIndex="1"
                          GridPane.rowIndex="7"/>
             <Text fx:id="progressText" text="0%" GridPane.columnIndex="3" GridPane.rowIndex="7"/>
-
+            <Button fx:id="startButton" GridPane.rowIndex="7" GridPane.columnIndex="5" maxWidth="Infinity"
+                    onAction="#handleUploadStartAction"
+                    text="Start upload"/>
         </children>
 
         <columnConstraints>

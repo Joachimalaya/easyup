@@ -11,7 +11,7 @@ import java.io.File
 
 
 private fun acquireDefaultConfigFile(): File {
-    val file = File(appDirectory.toString() + "/config/config.json")
+    val file = File("$appDirectory/config/config.json")
     Files.createParentDirs(file)
     return file
 }

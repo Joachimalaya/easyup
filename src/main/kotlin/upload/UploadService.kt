@@ -41,7 +41,7 @@ object UploadService {
 
     private val uploadQueue = LinkedList<UploadJob>()
     private var currentUpload: UploadJob? = null
-    private val uploadBufferSize = numBytes(512, BinaryPrefix.MEBIBYTE)
+    private val uploadBufferSize = numBytes(256, BinaryPrefix.MEBIBYTE)
 
     private fun beginUpload(uploadJob: UploadJob) {
         currentUpload = uploadJob
@@ -52,15 +52,16 @@ object UploadService {
             video.status = VideoStatus()
             video.status.privacyStatus = PrivacyStatus.PRIVATE.privacyStatus
 
-            if (uploadJob.scheduledPublish) {
-                publishDateToGoogleDateTime(uploadJob.publishDate)
-            }
 
             video.snippet = VideoSnippet()
             video.snippet.title = replacePlaceholders(uploadJob.template.title, uploadJob.placeholders)
             video.snippet.description = replacePlaceholders(uploadJob.template.description, uploadJob.placeholders)
-
             video.snippet.tags = uploadJob.template.tags.asList()
+
+            if (uploadJob.scheduledPublish) {
+                video.snippet.publishedAt = publishDateToGoogleDateTime(uploadJob.publishDate)
+            }
+
             uploadJob.template.videoFile.inputStream().buffered(uploadBufferSize).use {
                 val mediaContent = InputStreamContent("video/*", it)
                 mediaContent.setRetrySupported(true)
