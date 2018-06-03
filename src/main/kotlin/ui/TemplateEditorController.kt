@@ -3,6 +3,7 @@ package ui
 import config.activeConfig
 import config.jsonMapper
 import entity.RawUploadTemplate
+import exec.logger
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.Alert
@@ -32,32 +33,41 @@ class TemplateEditorController : Initializable {
         // NOP
     }
 
-    fun handleLoad() {
-        val answer = SizedAlert(Alert.AlertType.INFORMATION, "Loading a template will discard all unsaved changes.\nAre you sure you want to load a template file?", ButtonType.YES, ButtonType.NO).showAndWait()
-        if (answer.isPresent && answer.get() == ButtonType.YES) {
-            val chooser = FileChooser()
-            val targetFile: File? = chooser.showOpenDialog(rootPane.scene.window)
+    @FXML
+    private fun handleLoad() {
+        try {
+            val answer = SizedAlert(Alert.AlertType.INFORMATION, "Loading a template will discard all unsaved changes.\nAre you sure you want to load a template file?", ButtonType.YES, ButtonType.NO).showAndWait()
+            if (answer.isPresent && answer.get() == ButtonType.YES) {
+                val chooser = FileChooser()
+                val targetFile: File? = chooser.showOpenDialog(rootPane.scene.window)
 
-            targetFile?.inputStream()?.use {
-                val template = jsonMapper.readValue(it, RawUploadTemplate::class.java)
-                titleInput.text = template.titleTemplate
-                descriptionInput.text = template.descriptionTemplate
-                tagsInput.text = template.tags.joinToString(", ")
+                targetFile?.inputStream()?.use {
+                    val template = jsonMapper.readValue(it, RawUploadTemplate::class.java)
+                    titleInput.text = template.titleTemplate
+                    descriptionInput.text = template.descriptionTemplate
+                    tagsInput.text = template.tags.joinToString(", ")
+                }
+                activeConfig.updateLastVisitedDirectory(targetFile)
             }
-            activeConfig.updateLastVisitedDirectory(targetFile)
+        } catch (e: Exception) {
+            logger.error("An unhandled Exception occurred!", e)
         }
     }
 
-    fun handleSave() {
-        val chooser = FileChooser()
+    @FXML
+    private fun handleSave() {
+        try {
+            val chooser = FileChooser()
 
-        val targetFile = chooser.showSaveDialog(rootPane.scene.window)
-        if (targetFile != null) {
-            val tags = tagsInput.text.split(",").map { it.trim() }.toTypedArray()
-            val template = RawUploadTemplate(titleInput.text, descriptionInput.text, "", tags)
-            targetFile.outputStream().use { jsonMapper.writeValue(it, template) }
-            activeConfig.updateLastVisitedDirectory(targetFile)
+            val targetFile = chooser.showSaveDialog(rootPane.scene.window)
+            if (targetFile != null) {
+                val tags = tagsInput.text.split(",").map { it.trim() }.toTypedArray()
+                val template = RawUploadTemplate(titleInput.text, descriptionInput.text, "", tags)
+                targetFile.outputStream().use { jsonMapper.writeValue(it, template) }
+                activeConfig.updateLastVisitedDirectory(targetFile)
+            }
+        } catch (e: Exception) {
+            logger.error("An unhandled Exception occurred!", e)
         }
-
     }
 }

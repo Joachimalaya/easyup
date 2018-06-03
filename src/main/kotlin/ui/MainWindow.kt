@@ -1,6 +1,7 @@
 package ui
 
 import config.activeConfig
+import exec.logger
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.event.EventHandler
@@ -31,37 +32,42 @@ class MainWindow : Application() {
     var windowStage: Stage? = null
 
     override fun start(primaryStage: Stage) {
-        INSTANCE = this
+        try {
 
-        windowStage = primaryStage
-        val root = FXMLLoader.load<Parent>(javaClass.getResource(layoutPath))
-        val scene = Scene(root)
+            INSTANCE = this
 
-        cssFiles.forEach { scene.stylesheets.add(it) }
+            windowStage = primaryStage
+            val root = FXMLLoader.load<Parent>(javaClass.getResource(layoutPath))
+            val scene = Scene(root)
 
-        primaryStage.scene = scene
-        primaryStage.minWidth = 720.0
-        primaryStage.minHeight = 640.0
-        primaryStage.isMaximized = true
-        primaryStage.show()
-        primaryStage.title = TITLEPREFIX
+            cssFiles.forEach { scene.stylesheets.add(it) }
 
-        primaryStage.onCloseRequest = EventHandler {
-            // write always; does no harm
-            activeConfig.writeToDefault()
+            primaryStage.scene = scene
+            primaryStage.minWidth = 720.0
+            primaryStage.minHeight = 640.0
+            primaryStage.isMaximized = true
+            primaryStage.show()
+            primaryStage.title = TITLEPREFIX
 
-            // check whether upload is running before showing this
-            if (UploadService.uploading()) {
-                // security question for user
-                val reallyClose = SizedAlert(Alert.AlertType.WARNING, "Closing the application while an upload is running means all progress will be lost.\nStill quit?", ButtonType.YES, ButtonType.NO).showAndWait()
-                if (reallyClose.isPresent && reallyClose.get() == ButtonType.YES) {
-                    // stop uploading thread
-                    // TODO: wrap cancel request in method
-                    UploadService.cancelUpload = true
-                } else {
-                    it.consume()
+            primaryStage.onCloseRequest = EventHandler {
+                // write always; does no harm
+                activeConfig.writeToDefault()
+
+                // check whether upload is running before showing this
+                if (UploadService.uploading()) {
+                    // security question for user
+                    val reallyClose = SizedAlert(Alert.AlertType.WARNING, "Closing the application while an upload is running means all progress will be lost.\nStill quit?", ButtonType.YES, ButtonType.NO).showAndWait()
+                    if (reallyClose.isPresent && reallyClose.get() == ButtonType.YES) {
+                        // stop uploading thread
+                        // TODO: wrap cancel request in method
+                        UploadService.cancelUpload = true
+                    } else {
+                        it.consume()
+                    }
                 }
             }
+        } catch (e: Exception) {
+            logger.error("An unhandled exception occurred", e)
         }
     }
 
