@@ -3,6 +3,7 @@ package ui
 import entity.Placeholder
 import entity.UploadJob
 import entity.UploadTemplate
+import exec.logger
 import javafx.event.ActionEvent
 import javafx.event.Event
 import javafx.fxml.FXML
@@ -62,57 +63,75 @@ class UploaderController : Initializable {
     private var uploadTemplate = UploadTemplate()
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
-        // restore data from pool
-        val restorable = toRestore
+        try {
+            // restore data from pool
+            val restorable = toRestore
 
-        uploadTemplate = UploadTemplate(restorable)
+            uploadTemplate = UploadTemplate(restorable)
 
-        titlePreview.text = restorable.title
-        descriptionPreview.text = restorable.description
-        tagsPreview.text = restorable.tags.joinToString(", ")
-        placeholderTable.items.addAll(restorable.placeholders)
+            titlePreview.text = restorable.title
+            descriptionPreview.text = restorable.description
+            tagsPreview.text = restorable.tags.joinToString(", ")
+            placeholderTable.items.addAll(restorable.placeholders)
 
-        restorable.thumbnailFile?.inputStream()?.use { thumbnailPreview.image = Image(it) }
+            restorable.thumbnailFile?.inputStream()?.use { thumbnailPreview.image = Image(it) }
 
-        // set publish time
-        val now = LocalDateTime.now()
-        publishDate.value = now.toLocalDate()
-        publishHour.valueFactory.value = now.hour
-        publishMinute.valueFactory.value = now.minute
+            // set publish time
+            val now = LocalDateTime.now()
+            publishDate.value = now.toLocalDate()
+            publishHour.valueFactory.value = now.hour
+            publishMinute.valueFactory.value = now.minute
 
-        tab.textProperty().bind(titlePreview.textProperty())
+            tab.textProperty().bind(titlePreview.textProperty())
 
-        privacyStatus.valueProperty().addListener { _, _, newValue ->
-            val scheduleDisabled = newValue != PrivacyStatus.SCHEDULED
-            publishDate.isDisable = scheduleDisabled
-            publishHour.isDisable = scheduleDisabled
-            publishMinute.isDisable = scheduleDisabled
+            privacyStatus.valueProperty().addListener { _, _, newValue ->
+                val scheduleDisabled = newValue != PrivacyStatus.SCHEDULED
+                publishDate.isDisable = scheduleDisabled
+                publishHour.isDisable = scheduleDisabled
+                publishMinute.isDisable = scheduleDisabled
+            }
+            privacyStatus.value = restorable.privacyStatus
+            tab.textProperty().bind(titlePreview.textProperty())
+        } catch (e: Exception) {
+            logger.error("An unhandled Exception occurred!", e)
         }
-        privacyStatus.value = restorable.privacyStatus
     }
 
     @FXML
     private fun handleCloseRequest(event: Event) {
-        if (UploadService.uploadingTab(tab)) {
-            // TODO: implement
-            SizedAlert(Alert.AlertType.ERROR, "Removing the currently running upload is not supported.", ButtonType.OK)
-        } else {
-            // TODO: implement
-            removeFromQueueWithTab(tab)
+        try {
+            if (UploadService.uploadingTab(tab)) {
+                // TODO: implement
+                SizedAlert(Alert.AlertType.ERROR, "Removing the currently running upload is not supported.", ButtonType.OK)
+            } else {
+                // TODO: implement
+                removeFromQueueWithTab(tab)
+            }
+        } catch (e: Exception) {
+            logger.error("An unhandled Exception occurred!", e)
         }
     }
 
     @FXML
     private fun handleUploadStartAction(event: ActionEvent) {
-        lockUI()
+        try {
+            lockUI()
 
-        val publishDateTime = publishDate.value.atTime(publishHour.value, publishMinute.value)
-        scheduleUpload(UploadJob(uploadTemplate, placeholderTable.items, uploadProgress.progressProperty(), progressText.textProperty(), tab, publishDateTime, privacyStatus.value))
+            val publishDateTime = publishDate.value.atTime(publishHour.value, publishMinute.value)
+            scheduleUpload(UploadJob(uploadTemplate, placeholderTable.items, uploadProgress.progressProperty(), progressText.textProperty(), tab, publishDateTime, scheduledPublish.isSelected))
+        } catch (e: Exception) {
+            logger.error("An unhandled Exception occurred!", e)
+        }
     }
 
     @FXML
-    private fun handlePlaceholderUpdate(event: CellEditEvent<Placeholder, String>) =
+    private fun handlePlaceholderUpdate(event: CellEditEvent<Placeholder, String>) {
+        try {
             updatePlaceholders(event, titlePreview, descriptionPreview, uploadTemplate)
+        } catch (e: Exception) {
+            logger.error("An unhandled Exception occurred!", e)
+        }
+    }
 
     private fun lockUI() {
         placeholderTable.isDisable = true
