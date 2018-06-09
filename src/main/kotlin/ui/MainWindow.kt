@@ -40,7 +40,7 @@ class MainWindow : Application() {
         cssFiles.forEach { scene.stylesheets.add(it) }
 
         primaryStage.scene = scene
-        primaryStage.minWidth = 720.0
+        primaryStage.minWidth = 1000.0
         primaryStage.minHeight = 640.0
         primaryStage.isMaximized = true
         primaryStage.show()

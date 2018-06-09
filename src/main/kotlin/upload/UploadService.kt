@@ -50,15 +50,14 @@ object UploadService {
             val video = Video()
 
             video.status = VideoStatus()
-            video.status.privacyStatus = PrivacyStatus.PRIVATE.privacyStatus
-
+            video.status.privacyStatus = uploadJob.privacyStatus.privacyStatus
 
             video.snippet = VideoSnippet()
             video.snippet.title = replacePlaceholders(uploadJob.template.title, uploadJob.placeholders)
             video.snippet.description = replacePlaceholders(uploadJob.template.description, uploadJob.placeholders)
             video.snippet.tags = uploadJob.template.tags.asList()
 
-            if (uploadJob.scheduledPublish) {
+            if (uploadJob.privacyStatus == PrivacyStatus.SCHEDULED) {
                 video.snippet.publishedAt = publishDateToGoogleDateTime(uploadJob.publishDate)
             }
 

@@ -5,6 +5,7 @@ import entity.RawUploadTemplate
 import entity.UploadJob
 import entity.UploadTemplate
 import exec.appDirectory
+import youtube.video.PrivacyStatus
 import java.io.File
 
 /**
@@ -12,7 +13,8 @@ import java.io.File
  */
 class RestorableUpload() : UploadTemplate() {
 
-    var placeholders: List<Placeholder> = emptyList()
+    var placeholders = emptyList<Placeholder>()
+    var privacyStatus = PrivacyStatus.PRIVATE
 
     // need to provide empty constructor for deserialization
     init {
@@ -43,6 +45,7 @@ class RestorableUpload() : UploadTemplate() {
         videoFile = uploadJob.template.videoFile
         thumbnailFile = uploadJob.template.thumbnailFile
         placeholders = uploadJob.placeholders
+        privacyStatus = uploadJob.privacyStatus
     }
 
 }

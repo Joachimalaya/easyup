@@ -9,6 +9,6 @@ enum class PrivacyStatus(val privacyStatus: String) {
 
     PUBLIC("PUBLIC"),
     PRIVATE("PRIVATE"),
-    UNLISTED("UNLISTED")
-
+    UNLISTED("UNLISTED"),
+    SCHEDULED("PUBLIC")
 }

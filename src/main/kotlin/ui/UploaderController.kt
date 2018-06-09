@@ -18,6 +18,7 @@ import upload.UploadService
 import upload.UploadService.removeFromQueueWithTab
 import upload.UploadService.scheduleUpload
 import upload.resumable.RestorableUpload
+import youtube.video.PrivacyStatus
 import java.net.URL
 import java.time.LocalDateTime
 import java.util.*
@@ -50,13 +51,13 @@ class UploaderController : Initializable {
     @FXML
     lateinit var thumbnailPreview: ImageView
     @FXML
-    lateinit var scheduledPublish: CheckBox
-    @FXML
     lateinit var publishDate: DatePicker
     @FXML
     lateinit var publishHour: Spinner<Int>
     @FXML
     lateinit var publishMinute: Spinner<Int>
+    @FXML
+    lateinit var privacyStatus: ChoiceBox<PrivacyStatus>
 
     private var uploadTemplate = UploadTemplate()
 
@@ -80,6 +81,14 @@ class UploaderController : Initializable {
         publishMinute.valueFactory.value = now.minute
 
         tab.textProperty().bind(titlePreview.textProperty())
+
+        privacyStatus.valueProperty().addListener { _, _, newValue ->
+            val scheduleDisabled = newValue != PrivacyStatus.SCHEDULED
+            publishDate.isDisable = scheduleDisabled
+            publishHour.isDisable = scheduleDisabled
+            publishMinute.isDisable = scheduleDisabled
+        }
+        privacyStatus.value = restorable.privacyStatus
     }
 
     @FXML
@@ -98,7 +107,7 @@ class UploaderController : Initializable {
         lockUI()
 
         val publishDateTime = publishDate.value.atTime(publishHour.value, publishMinute.value)
-        scheduleUpload(UploadJob(uploadTemplate, placeholderTable.items, uploadProgress.progressProperty(), progressText.textProperty(), tab, publishDateTime, scheduledPublish.isSelected))
+        scheduleUpload(UploadJob(uploadTemplate, placeholderTable.items, uploadProgress.progressProperty(), progressText.textProperty(), tab, publishDateTime, privacyStatus.value))
     }
 
     @FXML
