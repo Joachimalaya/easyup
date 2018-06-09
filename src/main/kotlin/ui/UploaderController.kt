@@ -118,7 +118,7 @@ class UploaderController : Initializable {
             lockUI()
 
             val publishDateTime = publishDate.value.atTime(publishHour.value, publishMinute.value)
-            scheduleUpload(UploadJob(uploadTemplate, placeholderTable.items, uploadProgress.progressProperty(), progressText.textProperty(), tab, publishDateTime, scheduledPublish.isSelected))
+            scheduleUpload(UploadJob(uploadTemplate, placeholderTable.items, uploadProgress.progressProperty(), progressText.textProperty(), tab, publishDateTime, privacyStatus.value))
         } catch (e: Exception) {
             logger.error("An unhandled Exception occurred!", e)
         }
