@@ -29,9 +29,8 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
-
 /**
- * Handles the actual upload of template to YouTube by calling the API.
+ * Handles the actual upload of an [UploadJob] to YouTube by calling the API.
  */
 object UploadService {
 

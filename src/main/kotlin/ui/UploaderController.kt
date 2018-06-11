@@ -104,7 +104,6 @@ class UploaderController : Initializable {
                 // TODO: implement
                 SizedAlert(Alert.AlertType.ERROR, "Removing the currently running upload is not supported.", ButtonType.OK)
             } else {
-                // TODO: implement
                 removeFromQueueWithTab(tab)
             }
         } catch (e: Exception) {
