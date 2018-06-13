@@ -25,7 +25,6 @@ class MainWindowController : Initializable {
 
     @FXML
     lateinit var rootPane: Pane
-
     @FXML
     lateinit var tabPane: TabPane
 
@@ -34,6 +33,7 @@ class MainWindowController : Initializable {
             INSTANCE = this
 
             AddUploadTabService.addUploadTabs(UnfinishedUploadLoadService.loadUnfinishedUploads())
+            UnfinishedUploadLoadService.deleteUnfinishedUploads()
         } catch (e: Exception) {
             logger.error("An unhandled Exception occurred!", e)
         }
