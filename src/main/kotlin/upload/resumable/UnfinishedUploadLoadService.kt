@@ -35,6 +35,7 @@ object UnfinishedUploadLoadService {
         }
     }
 
+    // TODO: processingFailureReason is not filled correctly by YouTube; not yet implemented correctly?
     private fun findFailedUploads(videosToLookAt: Int = 5): List<Video> {
         val uploadListId = Authorization.connection.Channels()
                 .list("contentDetails")
@@ -52,6 +53,7 @@ object UnfinishedUploadLoadService {
                 .list("snippet,processingDetails")
                 .setId(uploads.items.joinToString(",", transform = { it.contentDetails.videoId }))
                 .execute()
-                .items.filter { it.processingDetails.processingFailureReason == "uploadFailed" }
+                .items
+                .filter { it.processingDetails.processingFailureReason == "uploadFailed" }
     }
 }

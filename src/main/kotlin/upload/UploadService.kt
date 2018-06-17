@@ -45,7 +45,7 @@ object UploadService {
     private fun beginUpload(uploadJob: UploadJob) {
         currentUpload = uploadJob
         // started in new Thread to prevent UI hang
-        Thread {
+        val uploadThread = Thread {
             val video = Video()
 
             video.status = VideoStatus()
@@ -110,7 +110,9 @@ object UploadService {
             currentUpload = null
             persistUploadQueue()
             tryToStartUpload()
-        }.start()
+        }
+        uploadThread.name = "easyUp Upload Thread"
+        uploadThread.start()
     }
 
     fun publishDateToGoogleDateTime(publishDate: LocalDateTime): DateTime {
