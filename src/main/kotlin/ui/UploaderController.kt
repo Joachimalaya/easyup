@@ -92,6 +92,8 @@ class UploaderController : Initializable {
             }
             privacyStatus.value = restorable.privacyStatus
             tab.textProperty().bind(titlePreview.textProperty())
+
+            updatePlaceholders(restorable.placeholders, titlePreview, descriptionPreview, uploadTemplate)
         } catch (e: Exception) {
             logger.error("An unhandled Exception occurred!", e)
         }

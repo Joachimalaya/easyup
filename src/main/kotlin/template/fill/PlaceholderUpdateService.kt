@@ -19,8 +19,13 @@ object PlaceholderUpdateService {
         descriptionPreview.text = replacePlaceholders(activeTemplate.description, event.tableView.items)
     }
 
+    fun updatePlaceholders(placeholders: List<Placeholder>, titlePreview: TextField, descriptionPreview: TextArea, activeTemplate: UploadTemplate) {
+        titlePreview.text = replacePlaceholders(activeTemplate.title, placeholders)
+        descriptionPreview.text = replacePlaceholders(activeTemplate.description, placeholders)
+    }
+
     /**
-     * Replaces all placeholder formatted with {} in the given text with the given key-value-like Placeholders.
+     * Replaces all placeholder formatted with {} in the given text with the given key-value-like [Placeholder]s.
      */
     fun replacePlaceholders(text: String, placeholders: List<Placeholder>): String {
         var replacedText = text
