@@ -20,6 +20,7 @@ import upload.UploadService.removeFromQueueWithTab
 import upload.UploadService.scheduleUpload
 import upload.resumable.RestorableUpload
 import youtube.video.PrivacyStatus
+import java.io.FileNotFoundException
 import java.net.URL
 import java.time.LocalDateTime
 import java.util.*
@@ -64,17 +65,14 @@ class UploaderController : Initializable {
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         try {
-            // restore data from pool
-            val restorable = toRestore
+            uploadTemplate = UploadTemplate(toRestore)
 
-            uploadTemplate = UploadTemplate(restorable)
+            titlePreview.text = toRestore.title
+            descriptionPreview.text = toRestore.description
+            tagsPreview.text = toRestore.tags.joinToString(", ")
+            placeholderTable.items.addAll(toRestore.placeholders)
 
-            titlePreview.text = restorable.title
-            descriptionPreview.text = restorable.description
-            tagsPreview.text = restorable.tags.joinToString(", ")
-            placeholderTable.items.addAll(restorable.placeholders)
-
-            restorable.thumbnailFile?.inputStream()?.use { thumbnailPreview.image = Image(it) }
+            toRestore.thumbnailFile?.inputStream()?.use { thumbnailPreview.image = Image(it) }
 
             // set publish time
             val now = LocalDateTime.now()
@@ -90,10 +88,21 @@ class UploaderController : Initializable {
                 publishHour.isDisable = scheduleDisabled
                 publishMinute.isDisable = scheduleDisabled
             }
-            privacyStatus.value = restorable.privacyStatus
+            privacyStatus.value = toRestore.privacyStatus
             tab.textProperty().bind(titlePreview.textProperty())
 
-            updatePlaceholders(restorable.placeholders, titlePreview, descriptionPreview, uploadTemplate)
+            updatePlaceholders(toRestore.placeholders, titlePreview, descriptionPreview, uploadTemplate)
+        } catch (fnfe: FileNotFoundException) {
+            SizedAlert(
+                    Alert.AlertType.ERROR,
+                    "One of the files needed to restore the upload could not be loaded." +
+                            "\nFollowing files were looked for:" +
+                            "\n${toRestore.thumbnailFile}" +
+                            "\n${toRestore.videoFile}" +
+                            "\nBecause those files are necessary to continue, this restoration will be aborted.",
+                    ButtonType.OK
+            )
+            logger.error("file referenced at upload restoration not found", fnfe)
         } catch (e: Exception) {
             logger.error("An unhandled Exception occurred!", e)
         }
