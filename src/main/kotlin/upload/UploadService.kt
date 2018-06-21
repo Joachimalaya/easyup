@@ -11,10 +11,14 @@ import com.google.api.services.youtube.model.VideoStatus
 import com.google.common.base.Stopwatch
 import config.jsonMapper
 import entity.UploadJob
+import exec.logger
 import javafx.application.Platform
+import javafx.scene.control.Alert
+import javafx.scene.control.ButtonType
 import javafx.scene.control.Tab
 import template.fill.PlaceholderUpdateService.replacePlaceholders
 import ui.MainWindow
+import ui.alert.SizedAlert
 import ui.notification.Notification
 import upload.resumable.RestorableUpload
 import upload.resumable.UnfinishedUploadLoadService
@@ -22,6 +26,7 @@ import youtube.video.BinaryPrefix
 import youtube.video.PrivacyStatus
 import youtube.video.numBytes
 import java.io.File
+import java.io.FileNotFoundException
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -61,46 +66,62 @@ object UploadService {
             }
 
             uploadJob.template.videoFile.inputStream().buffered(uploadBufferSize).use {
-                val mediaContent = InputStreamContent("video/*", it)
-                mediaContent.setRetrySupported(true)
-                val videoInsert = Authorization.connection.videos().insert("snippet,statistics,status", video, mediaContent)
-                val uploader = videoInsert.mediaHttpUploader
-                uploader.isDirectUploadEnabled = false
-                val stopwatch = Stopwatch.createUnstarted()
+                try {
 
-                uploader.progressListener = MediaHttpUploaderProgressListener {
-                    if (cancelUpload) {
-                        throw RuntimeException("termination of upload thread requested")
-                    }
-                    when (it.uploadState!!) {
-                        MediaHttpUploader.UploadState.NOT_STARTED ->
-                            uploadJob.progressText.value = "starting..."
-                        MediaHttpUploader.UploadState.INITIATION_STARTED ->
-                            uploadJob.progressText.value = "initiating upload..."
-                        MediaHttpUploader.UploadState.INITIATION_COMPLETE ->
-                            stopwatch.start()
-                        MediaHttpUploader.UploadState.MEDIA_IN_PROGRESS -> {
-                            uploadJob.progressBar.value = percentageDone(it, uploadJob.template.videoFile)
-                            uploadJob.progressText.value = progressFeedback(uploadJob.progressBar.value, stopwatch.elapsed(TimeUnit.MILLISECONDS))
 
-                            MainWindow.INSTANCE?.changeTitle(shortProgressFeedback(uploadJob.progressBar.value, stopwatch.elapsed(TimeUnit.MILLISECONDS)))
+                    val mediaContent = InputStreamContent("video/*", it)
+                    mediaContent.setRetrySupported(true)
+                    val videoInsert = Authorization.connection.videos().insert("snippet,statistics,status", video, mediaContent)
+                    val uploader = videoInsert.mediaHttpUploader
+                    uploader.isDirectUploadEnabled = false
+                    val stopwatch = Stopwatch.createUnstarted()
+
+                    uploader.progressListener = MediaHttpUploaderProgressListener {
+                        if (cancelUpload) {
+                            throw RuntimeException("termination of upload thread requested")
                         }
-                        MediaHttpUploader.UploadState.MEDIA_COMPLETE -> {
-                            uploadJob.progressText.value = "upload complete"
-                            MainWindow.INSTANCE?.resetTitle()
+                        when (it.uploadState!!) {
+                            MediaHttpUploader.UploadState.NOT_STARTED ->
+                                uploadJob.progressText.value = "starting..."
+                            MediaHttpUploader.UploadState.INITIATION_STARTED ->
+                                uploadJob.progressText.value = "initiating upload..."
+                            MediaHttpUploader.UploadState.INITIATION_COMPLETE ->
+                                stopwatch.start()
+                            MediaHttpUploader.UploadState.MEDIA_IN_PROGRESS -> {
+                                uploadJob.progressBar.value = percentageDone(it, uploadJob.template.videoFile)
+                                uploadJob.progressText.value = progressFeedback(uploadJob.progressBar.value, stopwatch.elapsed(TimeUnit.MILLISECONDS))
+
+                                MainWindow.INSTANCE?.changeTitle(shortProgressFeedback(uploadJob.progressBar.value, stopwatch.elapsed(TimeUnit.MILLISECONDS)))
+                            }
+                            MediaHttpUploader.UploadState.MEDIA_COMPLETE -> {
+                                uploadJob.progressText.value = "upload complete"
+                                MainWindow.INSTANCE?.resetTitle()
+                            }
                         }
                     }
-                }
 
-                val returnedVideo = videoInsert.execute()
+                    val returnedVideo = videoInsert.execute()
 
-                // add thumbnailFile
-                uploadJob.template.thumbnailFile?.inputStream().use {
-                    val thumbnailSet = Authorization.connection.thumbnails().set(returnedVideo.id, InputStreamContent("image/png", it))
-                    thumbnailSet.mediaHttpUploader.isDirectUploadEnabled = false
-                    thumbnailSet.execute()
+                    // add thumbnailFile
+                    uploadJob.template.thumbnailFile?.inputStream().use {
+                        val thumbnailSet = Authorization.connection.thumbnails().set(returnedVideo.id, InputStreamContent("image/png", it))
+                        thumbnailSet.mediaHttpUploader.isDirectUploadEnabled = false
+                        thumbnailSet.execute()
+                    }
+                } catch (fnfe: FileNotFoundException) {
+                    SizedAlert(
+                            Alert.AlertType.ERROR,
+                            "One of the files needed to start the upload could not be loaded." +
+                                    "\nFollowing files were looked for:" +
+                                    "\n${uploadJob.template.thumbnailFile}" +
+                                    "\n${uploadJob.template.videoFile}" +
+                                    "\nBecause those files are necessary to continue, this upload can not start.",
+                            ButtonType.OK
+                    ).showAndWait()
+                    logger.error("file referenced at upload start not found", fnfe)
                 }
             }
+
 
             // start next queued upload
             Platform.runLater {

@@ -101,7 +101,7 @@ class UploaderController : Initializable {
                             "\n${toRestore.videoFile}" +
                             "\nBecause those files are necessary to continue, this restoration will be aborted.",
                     ButtonType.OK
-            )
+            ).showAndWait()
             logger.error("file referenced at upload restoration not found", fnfe)
         } catch (e: Exception) {
             logger.error("An unhandled Exception occurred!", e)
