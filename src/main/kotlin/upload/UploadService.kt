@@ -47,6 +47,8 @@ object UploadService {
     private var currentUpload: UploadJob? = null
     private val uploadBufferSize = numBytes(256, BinaryPrefix.MEBIBYTE)
 
+    private var uploadNum = 0
+
     private fun beginUpload(uploadJob: UploadJob) {
         currentUpload = uploadJob
         // started in new Thread to prevent UI hang
@@ -132,7 +134,7 @@ object UploadService {
             persistUploadQueue()
             tryToStartUpload()
         }
-        uploadThread.name = "easyUp Upload Thread"
+        uploadThread.name = "easyUp Upload Thread-${uploadNum++}"
         uploadThread.start()
     }
 
