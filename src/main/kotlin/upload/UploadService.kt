@@ -1,8 +1,6 @@
 package upload
 
 import auth.Authorization
-import com.google.api.client.googleapis.media.MediaHttpUploader
-import com.google.api.client.googleapis.media.MediaHttpUploaderProgressListener
 import com.google.api.client.http.InputStreamContent
 import com.google.api.client.util.DateTime
 import com.google.api.services.youtube.model.*
@@ -15,7 +13,6 @@ import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Tab
 import template.fill.PlaceholderUpdateService.replacePlaceholders
-import ui.MainWindow
 import ui.alert.SizedAlert
 import ui.notification.Notification
 import upload.resumable.RestorableUpload
@@ -25,12 +22,9 @@ import youtube.video.PrivacyStatus
 import youtube.video.numBytes
 import java.io.File
 import java.io.FileNotFoundException
-import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
-import java.util.concurrent.TimeUnit
-import kotlin.math.roundToLong
 
 /**
  * Handles the actual upload of an [UploadJob] to YouTube by calling the API.
@@ -67,55 +61,20 @@ object UploadService {
 
             uploadJob.inputData.videoFile.inputStream().buffered(uploadBufferSize).use {
                 try {
-
-
                     val mediaContent = InputStreamContent("video/*", it)
                     mediaContent.setRetrySupported(true)
                     val videoInsert = Authorization.connection.videos().insert("snippet,statistics,status", video, mediaContent)
                     val uploader = videoInsert.mediaHttpUploader
                     uploader.isDirectUploadEnabled = false
-                    val stopwatch = Stopwatch.createUnstarted()
-
-                    uploader.progressListener = MediaHttpUploaderProgressListener {
-                        if (cancelUpload) {
-                            throw RuntimeException("termination of upload thread requested")
-                        }
-                        when (it.uploadState!!) {
-                            MediaHttpUploader.UploadState.NOT_STARTED ->
-                                uploadJob.progressText.value = "starting..."
-                            MediaHttpUploader.UploadState.INITIATION_STARTED ->
-                                uploadJob.progressText.value = "initiating upload..."
-                            MediaHttpUploader.UploadState.INITIATION_COMPLETE ->
-                                stopwatch.start()
-                            MediaHttpUploader.UploadState.MEDIA_IN_PROGRESS -> {
-                                uploadJob.progressBar.value = percentageDone(it, uploadJob.inputData.videoFile)
-                                uploadJob.progressText.value = progressFeedback(uploadJob.progressBar.value, stopwatch.elapsed(TimeUnit.MILLISECONDS))
-
-                                MainWindow.INSTANCE?.changeTitle(shortProgressFeedback(uploadJob.progressBar.value, stopwatch.elapsed(TimeUnit.MILLISECONDS)))
-                            }
-                            MediaHttpUploader.UploadState.MEDIA_COMPLETE -> {
-                                uploadJob.progressText.value = "upload complete"
-                                MainWindow.INSTANCE?.resetTitle()
-                            }
-                        }
-                    }
+                    uploader.progressListener = UploadProgressListener(uploadJob, Stopwatch.createUnstarted())
 
                     val returnedVideo = videoInsert.execute()
 
                     // add thumbnailFile
-                    uploadJob.inputData.thumbnailFile?.inputStream().use {
-                        val thumbnailSet = Authorization.connection.thumbnails().set(returnedVideo.id, InputStreamContent("image/png", it))
-                        thumbnailSet.mediaHttpUploader.isDirectUploadEnabled = false
-                        thumbnailSet.execute()
-                    }
+                    addThumbnail(uploadJob, returnedVideo)
 
                     // add to playlist if selected
-                    if (uploadJob.playlist != null) {
-                        val resourceId = ResourceId().setKind("youtube#video").setVideoId(returnedVideo.id)
-                        val snippet = PlaylistItemSnippet().setResourceId(resourceId).setPlaylistId(uploadJob.playlist.id)
-                        val playlistItem = PlaylistItem().setSnippet(snippet)
-                        Authorization.connection.playlistItems().insert("snippet", playlistItem).execute()
-                    }
+                    addToPlaylist(uploadJob, returnedVideo)
                 } catch (fnfe: FileNotFoundException) {
                     SizedAlert(
                             Alert.AlertType.ERROR,
@@ -143,22 +102,26 @@ object UploadService {
         uploadThread.start()
     }
 
+    private fun addThumbnail(uploadJob: UploadJob, returnedVideo: Video) {
+        uploadJob.inputData.thumbnailFile?.inputStream().use {
+            val thumbnailSet = Authorization.connection.thumbnails().set(returnedVideo.id, InputStreamContent("image/png", it))
+            thumbnailSet.mediaHttpUploader.isDirectUploadEnabled = false
+            thumbnailSet.execute()
+        }
+    }
+
+    private fun addToPlaylist(uploadJob: UploadJob, returnedVideo: Video) {
+        if (uploadJob.playlist != null) {
+            val resourceId = ResourceId().setKind("youtube#video").setVideoId(returnedVideo.id)
+            val snippet = PlaylistItemSnippet().setResourceId(resourceId).setPlaylistId(uploadJob.playlist.id)
+            val playlistItem = PlaylistItem().setSnippet(snippet)
+            Authorization.connection.playlistItems().insert("snippet", playlistItem).execute()
+        }
+    }
+
     fun publishDateToGoogleDateTime(publishDate: LocalDateTime): DateTime {
         val out = Date.from(publishDate.atZone(ZoneId.systemDefault()).toInstant())
         return DateTime(out)
-    }
-
-    private fun percentageDone(uploader: MediaHttpUploader, uploadedFile: File) =
-            uploader.numBytesUploaded.toDouble() / uploadedFile.length().toDouble()
-
-    fun progressFeedback(ratioDone: Double, elapsedMillis: Long): String {
-        val eta = eta(elapsedMillis, ratioDone)
-        return "%02.1f%% uploaded; ETA: %d:%02d:%02d".format(ratioDone * 100, eta / 3600, (eta % 3600) / 60, (eta % 60))
-    }
-
-    fun shortProgressFeedback(ratioDone: Double, elapsedMillis: Long): String {
-        val eta = eta(elapsedMillis, ratioDone)
-        return "%01.0f%% %d:%02d".format(ratioDone * 100, eta / 3600, (eta % 3600) / 60, (eta % 60))
     }
 
     fun scheduleUpload(job: UploadJob) {
@@ -166,8 +129,6 @@ object UploadService {
         persistUploadQueue()
         tryToStartUpload()
     }
-
-    private fun eta(elapsedMillis: Long, ratioDone: Double) = Duration.ofMillis((elapsedMillis / ratioDone - elapsedMillis).roundToLong()).seconds
 
     private fun persistUploadQueue() {
         val toPersist = when (currentUpload) {
