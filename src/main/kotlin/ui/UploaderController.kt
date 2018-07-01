@@ -1,8 +1,8 @@
 package ui
 
+import com.google.api.services.youtube.model.Playlist
 import entity.Placeholder
 import entity.UploadJob
-import entity.UploadTemplate
 import exec.logger
 import javafx.event.ActionEvent
 import javafx.event.Event
@@ -19,6 +19,7 @@ import upload.UploadService
 import upload.UploadService.removeFromQueueWithTab
 import upload.UploadService.scheduleUpload
 import upload.resumable.RestorableUpload
+import youtube.video.Playlists
 import youtube.video.PrivacyStatus
 import java.io.FileNotFoundException
 import java.net.URL
@@ -60,12 +61,16 @@ class UploaderController : Initializable {
     lateinit var publishMinute: Spinner<Int>
     @FXML
     lateinit var privacyStatus: ChoiceBox<PrivacyStatus>
+    @FXML
+    lateinit var addToPlaylist: CheckBox
+    @FXML
+    lateinit var playlist: ChoiceBox<Playlist>
 
-    private var uploadTemplate = UploadTemplate()
+    private var inputData = RestorableUpload()
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         try {
-            uploadTemplate = UploadTemplate(toRestore)
+            inputData = toRestore
 
             titlePreview.text = toRestore.title
             descriptionPreview.text = toRestore.description
@@ -82,6 +87,12 @@ class UploaderController : Initializable {
 
             tab.textProperty().bind(titlePreview.textProperty())
 
+            addToPlaylist.isSelected = false
+            addToPlaylist.selectedProperty().addListener { _, _, newValue -> playlist.isDisable = !newValue }
+
+            playlist.items.addAll(Playlists.playlists)
+            playlist.isDisable = true
+
             privacyStatus.valueProperty().addListener { _, _, newValue ->
                 val scheduleDisabled = newValue != PrivacyStatus.SCHEDULED
                 publishDate.isDisable = scheduleDisabled
@@ -91,7 +102,7 @@ class UploaderController : Initializable {
             privacyStatus.value = toRestore.privacyStatus
             tab.textProperty().bind(titlePreview.textProperty())
 
-            updatePlaceholders(toRestore.placeholders, titlePreview, descriptionPreview, uploadTemplate)
+            updatePlaceholders(toRestore.placeholders, titlePreview, descriptionPreview, inputData)
         } catch (fnfe: FileNotFoundException) {
             SizedAlert(
                     Alert.AlertType.ERROR,
@@ -128,7 +139,16 @@ class UploaderController : Initializable {
             lockUI()
 
             val publishDateTime = publishDate.value.atTime(publishHour.value, publishMinute.value)
-            scheduleUpload(UploadJob(uploadTemplate, placeholderTable.items, uploadProgress.progressProperty(), progressText.textProperty(), tab, publishDateTime, privacyStatus.value))
+            scheduleUpload(UploadJob(
+                    placeholderTable.items,
+                    uploadProgress.progressProperty(),
+                    progressText.textProperty(),
+                    tab,
+                    publishDateTime,
+                    privacyStatus.value,
+                    if (addToPlaylist.isSelected) playlist.value else null,
+                    inputData
+            ))
         } catch (e: Exception) {
             logger.error("An unhandled Exception occurred!", e)
         }
@@ -137,7 +157,7 @@ class UploaderController : Initializable {
     @FXML
     private fun handlePlaceholderUpdate(event: CellEditEvent<Placeholder, String>) {
         try {
-            updatePlaceholders(event, titlePreview, descriptionPreview, uploadTemplate)
+            updatePlaceholders(event, titlePreview, descriptionPreview, inputData)
         } catch (e: Exception) {
             logger.error("An unhandled Exception occurred!", e)
         }

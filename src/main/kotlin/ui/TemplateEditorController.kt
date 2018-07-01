@@ -36,7 +36,7 @@ class TemplateEditorController : Initializable {
     @FXML
     private fun handleLoad() {
         try {
-            val answer = SizedAlert(Alert.AlertType.INFORMATION, "Loading a template will discard all unsaved changes.\nAre you sure you want to load a template file?", ButtonType.YES, ButtonType.NO).showAndWait()
+            val answer = SizedAlert(Alert.AlertType.INFORMATION, "Loading a inputData will discard all unsaved changes.\nAre you sure you want to load a inputData file?", ButtonType.YES, ButtonType.NO).showAndWait()
             if (answer.isPresent && answer.get() == ButtonType.YES) {
                 val chooser = FileChooser()
                 val targetFile: File? = chooser.showOpenDialog(rootPane.scene.window)

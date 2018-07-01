@@ -3,7 +3,6 @@ package upload.resumable
 import entity.Placeholder
 import entity.RawUploadTemplate
 import entity.UploadJob
-import entity.UploadTemplate
 import exec.appDirectory
 import youtube.video.PrivacyStatus
 import java.io.File
@@ -11,10 +10,14 @@ import java.io.File
 /**
  * A serializable and deserializable collection of data needed to restore an unfinished UploadJob.
  */
-class RestorableUpload() : UploadTemplate() {
+class RestorableUpload() : RawUploadTemplate() {
 
     var placeholders = emptyList<Placeholder>()
     var privacyStatus = PrivacyStatus.PRIVATE
+    var title: String
+    var description: String
+    var videoFile: File
+    var thumbnailFile: File?
 
     // need to provide empty constructor for deserialization
     init {
@@ -35,17 +38,18 @@ class RestorableUpload() : UploadTemplate() {
         this.videoFile = videoFile
         this.thumbnailFile = thumbnailFile
         this.placeholders = placeholders
+        this.titleTemplate = template.titleTemplate
+        this.descriptionTemplate = template.descriptionTemplate
     }
 
     constructor(uploadJob: UploadJob) : this() {
-        title = uploadJob.template.title
-        description = uploadJob.template.description
-        game = uploadJob.template.game
-        tags = uploadJob.template.tags
-        videoFile = uploadJob.template.videoFile
-        thumbnailFile = uploadJob.template.thumbnailFile
+        title = uploadJob.inputData.titleTemplate
+        description = uploadJob.inputData.descriptionTemplate
+        game = uploadJob.inputData.game
+        tags = uploadJob.inputData.tags
+        videoFile = uploadJob.inputData.videoFile
+        thumbnailFile = uploadJob.inputData.thumbnailFile
         placeholders = uploadJob.placeholders
         privacyStatus = uploadJob.privacyStatus
     }
-
 }

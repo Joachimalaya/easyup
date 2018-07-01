@@ -59,15 +59,15 @@ object UploadService {
             video.status.privacyStatus = uploadJob.privacyStatus.privacyStatus
 
             video.snippet = VideoSnippet()
-            video.snippet.title = replacePlaceholders(uploadJob.template.title, uploadJob.placeholders)
-            video.snippet.description = replacePlaceholders(uploadJob.template.description, uploadJob.placeholders)
-            video.snippet.tags = uploadJob.template.tags.asList()
+            video.snippet.title = replacePlaceholders(uploadJob.inputData.titleTemplate, uploadJob.placeholders)
+            video.snippet.description = replacePlaceholders(uploadJob.inputData.descriptionTemplate, uploadJob.placeholders)
+            video.snippet.tags = uploadJob.inputData.tags.asList()
 
             if (uploadJob.privacyStatus == PrivacyStatus.SCHEDULED) {
                 video.snippet.publishedAt = publishDateToGoogleDateTime(uploadJob.publishDate)
             }
 
-            uploadJob.template.videoFile.inputStream().buffered(uploadBufferSize).use {
+            uploadJob.inputData.videoFile.inputStream().buffered(uploadBufferSize).use {
                 try {
 
 
@@ -90,7 +90,7 @@ object UploadService {
                             MediaHttpUploader.UploadState.INITIATION_COMPLETE ->
                                 stopwatch.start()
                             MediaHttpUploader.UploadState.MEDIA_IN_PROGRESS -> {
-                                uploadJob.progressBar.value = percentageDone(it, uploadJob.template.videoFile)
+                                uploadJob.progressBar.value = percentageDone(it, uploadJob.inputData.videoFile)
                                 uploadJob.progressText.value = progressFeedback(uploadJob.progressBar.value, stopwatch.elapsed(TimeUnit.MILLISECONDS))
 
                                 MainWindow.INSTANCE?.changeTitle(shortProgressFeedback(uploadJob.progressBar.value, stopwatch.elapsed(TimeUnit.MILLISECONDS)))
@@ -105,7 +105,7 @@ object UploadService {
                     val returnedVideo = videoInsert.execute()
 
                     // add thumbnailFile
-                    uploadJob.template.thumbnailFile?.inputStream().use {
+                    uploadJob.inputData.thumbnailFile?.inputStream().use {
                         val thumbnailSet = Authorization.connection.thumbnails().set(returnedVideo.id, InputStreamContent("image/png", it))
                         thumbnailSet.mediaHttpUploader.isDirectUploadEnabled = false
                         thumbnailSet.execute()
@@ -115,8 +115,8 @@ object UploadService {
                             Alert.AlertType.ERROR,
                             "One of the files needed to start the upload could not be loaded." +
                                     "\nFollowing files were looked for:" +
-                                    "\n${uploadJob.template.thumbnailFile}" +
-                                    "\n${uploadJob.template.videoFile}" +
+                                    "\n${uploadJob.inputData.thumbnailFile}" +
+                                    "\n${uploadJob.inputData.videoFile}" +
                                     "\nBecause those files are necessary to continue, this upload can not start.",
                             ButtonType.OK
                     ).showAndWait()

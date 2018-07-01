@@ -1,7 +1,7 @@
 package template.fill
 
 import entity.Placeholder
-import entity.UploadTemplate
+import entity.RawUploadTemplate
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TextArea
 import javafx.scene.control.TextField
@@ -12,16 +12,16 @@ import javafx.scene.control.TextField
  */
 object PlaceholderUpdateService {
 
-    fun updatePlaceholders(event: TableColumn.CellEditEvent<Placeholder, String>, titlePreview: TextField, descriptionPreview: TextArea, activeTemplate: UploadTemplate) {
+    fun updatePlaceholders(event: TableColumn.CellEditEvent<Placeholder, String>, titlePreview: TextField, descriptionPreview: TextArea, activeTemplate: RawUploadTemplate) {
         event.tableView.items[event.tablePosition.row].value = event.newValue
 
-        titlePreview.text = replacePlaceholders(activeTemplate.title, event.tableView.items)
-        descriptionPreview.text = replacePlaceholders(activeTemplate.description, event.tableView.items)
+        titlePreview.text = replacePlaceholders(activeTemplate.titleTemplate, event.tableView.items)
+        descriptionPreview.text = replacePlaceholders(activeTemplate.descriptionTemplate, event.tableView.items)
     }
 
-    fun updatePlaceholders(placeholders: List<Placeholder>, titlePreview: TextField, descriptionPreview: TextArea, activeTemplate: UploadTemplate) {
-        titlePreview.text = replacePlaceholders(activeTemplate.title, placeholders)
-        descriptionPreview.text = replacePlaceholders(activeTemplate.description, placeholders)
+    fun updatePlaceholders(placeholders: List<Placeholder>, titlePreview: TextField, descriptionPreview: TextArea, activeTemplate: RawUploadTemplate) {
+        titlePreview.text = replacePlaceholders(activeTemplate.titleTemplate, placeholders)
+        descriptionPreview.text = replacePlaceholders(activeTemplate.descriptionTemplate, placeholders)
     }
 
     /**

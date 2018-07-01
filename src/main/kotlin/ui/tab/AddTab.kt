@@ -19,7 +19,7 @@ class AddTab : Tab() {
 
         graphic = addButton
         addButton.setOnMouseClicked {
-            // load template
+            // load inputData
             val window = addButton.scene.window
             PrepareUploadService.handleLoadAction(window)
 

@@ -3,9 +3,9 @@ package entity
 import java.util.*
 
 /**
- *
+ *  This is the model for easyup-templates that are stored as JSON and read when a new upload is created by the user.
  */
-data class RawUploadTemplate(var titleTemplate: String, var descriptionTemplate: String, var game: String, var tags: Array<String>) {
+open class RawUploadTemplate(var titleTemplate: String, var descriptionTemplate: String, var game: String, var tags: Array<String>) {
 
     // empty constructor needed for JSON deserialization
     constructor() : this("", "", "", arrayOf(""))

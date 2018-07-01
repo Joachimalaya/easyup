@@ -55,13 +55,6 @@
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tags" GridPane.rowIndex="5"/>
             <TextField fx:id="tagsPreview" editable="false" prefWidth="205.0" GridPane.columnIndex="1"
                        GridPane.columnSpan="2147483647" GridPane.rowIndex="5"/>
-
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Thumbnail" GridPane.rowIndex="6"
-                  GridPane.valignment="TOP"/>
-            <ImageView fx:id="thumbnailPreview" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true"
-                       preserveRatio="true" GridPane.columnIndex="1" GridPane.columnSpan="2147483647"
-                       GridPane.rowIndex="6"/>
-
             <Text text="Privacy status" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
             <ChoiceBox fx:id="privacyStatus" GridPane.columnIndex="1" GridPane.rowIndex="4">
                 <items>
@@ -79,6 +72,13 @@
                      GridPane.rowIndex="4"/>
             <Spinner fx:id="publishMinute" amountToStepBy="5" editable="true" max="59" min="0" GridPane.columnIndex="5"
                      GridPane.rowIndex="4"/>
+
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Thumbnail" GridPane.rowIndex="6"
+                  GridPane.valignment="TOP"/>
+            <ImageView fx:id="thumbnailPreview" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true"
+                       preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+            <CheckBox text="Add to Playlist" fx:id="addToPlaylist" GridPane.columnIndex="3" GridPane.rowIndex="6"/>
+            <ChoiceBox fx:id="playlist" GridPane.columnIndex="4" GridPane.rowIndex="6"/>
 
             <Text text="Upload Progress" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
             <ProgressBar fx:id="uploadProgress" prefWidth="200.0" progress="0.0" GridPane.columnIndex="1"
