@@ -1,6 +1,5 @@
 package ui
 
-import com.google.api.services.youtube.model.Playlist
 import entity.Placeholder
 import entity.UploadJob
 import exec.logger
@@ -19,6 +18,7 @@ import upload.UploadService
 import upload.UploadService.removeFromQueueWithTab
 import upload.UploadService.scheduleUpload
 import upload.resumable.RestorableUpload
+import youtube.video.LabeledPlaylist
 import youtube.video.Playlists
 import youtube.video.PrivacyStatus
 import java.io.FileNotFoundException
@@ -64,7 +64,7 @@ class UploaderController : Initializable {
     @FXML
     lateinit var addToPlaylist: CheckBox
     @FXML
-    lateinit var playlist: ChoiceBox<Playlist>
+    lateinit var playlist: ChoiceBox<LabeledPlaylist>
 
     private var inputData = RestorableUpload()
 
@@ -90,7 +90,7 @@ class UploaderController : Initializable {
             addToPlaylist.isSelected = false
             addToPlaylist.selectedProperty().addListener { _, _, newValue -> playlist.isDisable = !newValue }
 
-            playlist.items.addAll(Playlists.playlists)
+            playlist.items.addAll(Playlists.playlists.map { LabeledPlaylist(it) })
             playlist.isDisable = true
 
             privacyStatus.valueProperty().addListener { _, _, newValue ->
@@ -146,7 +146,7 @@ class UploaderController : Initializable {
                     tab,
                     publishDateTime,
                     privacyStatus.value,
-                    if (addToPlaylist.isSelected) playlist.value else null,
+                    if (addToPlaylist.isSelected) playlist.value.playlist else null,
                     inputData
             ))
         } catch (e: Exception) {

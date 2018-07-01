@@ -13,7 +13,7 @@ object Playlists {
      * Use sparingly, as this costs quota and network requests are slow.
      */
     fun read() {
-        playlists = Authorization.connection.playlists().list("contentDetails,snippet,status").setMine(true).execute().items.toList()
+        playlists = Authorization.connection.playlists().list("contentDetails,snippet,status").setMine(true).setMaxResults(50).execute().items.toList()
     }
 
 }

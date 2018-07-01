@@ -5,9 +5,7 @@ import com.google.api.client.googleapis.media.MediaHttpUploader
 import com.google.api.client.googleapis.media.MediaHttpUploaderProgressListener
 import com.google.api.client.http.InputStreamContent
 import com.google.api.client.util.DateTime
-import com.google.api.services.youtube.model.Video
-import com.google.api.services.youtube.model.VideoSnippet
-import com.google.api.services.youtube.model.VideoStatus
+import com.google.api.services.youtube.model.*
 import com.google.common.base.Stopwatch
 import config.jsonMapper
 import entity.UploadJob
@@ -110,6 +108,14 @@ object UploadService {
                         thumbnailSet.mediaHttpUploader.isDirectUploadEnabled = false
                         thumbnailSet.execute()
                     }
+
+                    // add to playlist if selected
+                    if (uploadJob.playlist != null) {
+                        val resourceId = ResourceId().setKind("youtube#video").setVideoId(returnedVideo.id)
+                        val snippet = PlaylistItemSnippet().setResourceId(resourceId).setPlaylistId(uploadJob.playlist.id)
+                        val playlistItem = PlaylistItem().setSnippet(snippet)
+                        Authorization.connection.playlistItems().insert("snippet", playlistItem).execute()
+                    }
                 } catch (fnfe: FileNotFoundException) {
                     SizedAlert(
                             Alert.AlertType.ERROR,
@@ -123,7 +129,6 @@ object UploadService {
                     logger.error("file referenced at upload start not found", fnfe)
                 }
             }
-
 
             // start next queued upload
             Platform.runLater {
