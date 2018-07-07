@@ -14,15 +14,11 @@ class RestorableUpload() : RawUploadTemplate() {
 
     var placeholders = emptyList<Placeholder>()
     var privacyStatus = PrivacyStatus.PRIVATE
-    var title: String
-    var description: String
     var videoFile: File
     var thumbnailFile: File?
 
     // need to provide empty constructor for deserialization
     init {
-        title = ""
-        description = ""
         game = ""
         tags = emptyArray()
         // TODO: videoFile defaults to appDirectory; not that useful but also only temporary
@@ -31,20 +27,18 @@ class RestorableUpload() : RawUploadTemplate() {
     }
 
     constructor(template: RawUploadTemplate, videoFile: File, thumbnailFile: File?, placeholders: List<Placeholder>) : this() {
-        this.title = template.titleTemplate
-        this.description = template.descriptionTemplate
+        this.titleTemplate = template.titleTemplate
+        this.descriptionTemplate = template.descriptionTemplate
         this.game = template.game
         this.tags = template.tags
         this.videoFile = videoFile
         this.thumbnailFile = thumbnailFile
         this.placeholders = placeholders
-        this.titleTemplate = template.titleTemplate
-        this.descriptionTemplate = template.descriptionTemplate
     }
 
     constructor(uploadJob: UploadJob) : this() {
-        title = uploadJob.inputData.titleTemplate
-        description = uploadJob.inputData.descriptionTemplate
+        titleTemplate = uploadJob.inputData.titleTemplate
+        descriptionTemplate = uploadJob.inputData.descriptionTemplate
         game = uploadJob.inputData.game
         tags = uploadJob.inputData.tags
         videoFile = uploadJob.inputData.videoFile

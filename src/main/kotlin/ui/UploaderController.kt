@@ -12,6 +12,7 @@ import javafx.scene.control.TableColumn.CellEditEvent
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.text.Text
+import template.fill.PlaceholderUpdateService
 import template.fill.PlaceholderUpdateService.updatePlaceholders
 import ui.alert.SizedAlert
 import upload.UploadService
@@ -72,8 +73,8 @@ class UploaderController : Initializable {
         try {
             inputData = toRestore
 
-            titlePreview.text = toRestore.title
-            descriptionPreview.text = toRestore.description
+            titlePreview.text = PlaceholderUpdateService.replacePlaceholders(toRestore.titleTemplate, toRestore.placeholders)
+            descriptionPreview.text = PlaceholderUpdateService.replacePlaceholders(toRestore.descriptionTemplate, toRestore.placeholders)
             tagsPreview.text = toRestore.tags.joinToString(", ")
             placeholderTable.items.addAll(toRestore.placeholders)
 
