@@ -2,6 +2,7 @@ package ui.tab
 
 import javafx.scene.control.Button
 import javafx.scene.control.Tab
+import javafx.scene.control.Tooltip
 import template.read.PrepareUploadService
 
 /**
@@ -16,6 +17,7 @@ class AddTab : Tab() {
         styleClass.add("add-tab")
 
         val addButton = Button("+")
+        addButton.tooltip = Tooltip("add a new upload")
 
         graphic = addButton
         addButton.setOnMouseClicked {

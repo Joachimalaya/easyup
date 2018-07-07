@@ -20,7 +20,7 @@ class MainWindow : Application() {
         // can't use a kotlin object, because javafx calls MainWindow()
         var INSTANCE: MainWindow? = null
 
-        val TITLEPREFIX = "easyUp"
+        const val TITLEPREFIX = "easyUp"
     }
 
     private val layoutPath = "MainWindow.fxml"

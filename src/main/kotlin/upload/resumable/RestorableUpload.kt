@@ -11,6 +11,7 @@ import java.io.File
  * A serializable and deserializable collection of data needed to restore an unfinished UploadJob.
  */
 class RestorableUpload() : RawUploadTemplate() {
+    // TODO: add playlist
 
     var placeholders = emptyList<Placeholder>()
     var privacyStatus = PrivacyStatus.PRIVATE
