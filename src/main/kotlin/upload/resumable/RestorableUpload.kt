@@ -11,12 +11,12 @@ import java.io.File
  * A serializable and deserializable collection of data needed to restore an unfinished UploadJob.
  */
 class RestorableUpload() : RawUploadTemplate() {
-    // TODO: add playlist
 
     var placeholders = emptyList<Placeholder>()
     var privacyStatus = PrivacyStatus.PRIVATE
     var videoFile: File
     var thumbnailFile: File?
+    var playlist: String?
 
     // need to provide empty constructor for deserialization
     init {
@@ -25,6 +25,7 @@ class RestorableUpload() : RawUploadTemplate() {
         // TODO: videoFile defaults to appDirectory; not that useful but also only temporary
         videoFile = appDirectory
         thumbnailFile = null
+        playlist = null
     }
 
     constructor(template: RawUploadTemplate, videoFile: File, thumbnailFile: File?, placeholders: List<Placeholder>) : this() {
@@ -46,5 +47,6 @@ class RestorableUpload() : RawUploadTemplate() {
         thumbnailFile = uploadJob.inputData.thumbnailFile
         placeholders = uploadJob.placeholders
         privacyStatus = uploadJob.privacyStatus
+        playlist = uploadJob.playlist?.id
     }
 }

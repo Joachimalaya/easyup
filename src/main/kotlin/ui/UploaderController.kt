@@ -93,6 +93,9 @@ class UploaderController : Initializable {
 
             playlist.items.addAll(Playlists.playlists.map { LabeledPlaylist(it) })
             playlist.isDisable = true
+            if (toRestore.playlist != null) {
+                playlist.value = playlist.items.find { it.playlist.id == toRestore.playlist }
+            }
 
             privacyStatus.valueProperty().addListener { _, _, newValue ->
                 val scheduleDisabled = newValue != PrivacyStatus.SCHEDULED
