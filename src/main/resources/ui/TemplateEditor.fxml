@@ -18,11 +18,15 @@
                   GridPane.columnSpan="2" GridPane.rowIndex="1"/>
         <Label text="Tags" GridPane.rowIndex="2"/>
         <TextField fx:id="tagsInput" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2"/>
-        <ButtonBar prefHeight="40.0" prefWidth="200.0" GridPane.columnSpan="3" GridPane.rowIndex="3">
+        <ButtonBar prefHeight="40.0" prefWidth="200.0" GridPane.columnSpan="3" GridPane.rowIndex="3"
+                   buttonOrder="BNCL_HE+U+RAYXIO">
             <buttons>
+                <Button mnemonicParsing="false" onAction="#handleCancel" text="Cancel"
+                        ButtonBar.buttonData="CANCEL_CLOSE"/>
                 <Button mnemonicParsing="false" onAction="#handleLoad" text="Load template..."
                         ButtonBar.buttonData="LEFT"/>
-                <Button defaultButton="true" mnemonicParsing="false" onAction="#handleSave" text="Save template..."/>
+                <Button defaultButton="true" mnemonicParsing="false" ButtonBar.buttonData="FINISH"
+                        onAction="#handleSave" text="Save template..."/>
             </buttons>
         </ButtonBar>
     </children>

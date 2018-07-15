@@ -12,6 +12,7 @@ import javafx.scene.control.TextArea
 import javafx.scene.control.TextField
 import javafx.scene.layout.Pane
 import javafx.stage.FileChooser
+import javafx.stage.Stage
 import ui.alert.SizedAlert
 import java.io.File
 import java.net.URL
@@ -70,4 +71,7 @@ class TemplateEditorController : Initializable {
             logger.error("An unhandled Exception occurred!", e)
         }
     }
+
+    @FXML
+    private fun handleCancel() = (rootPane.scene.window as Stage).close()
 }

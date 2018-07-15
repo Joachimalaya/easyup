@@ -11,6 +11,7 @@
         <MenuBar BorderPane.alignment="CENTER">
             <Menu text="File">
                 <MenuItem onAction="#handleTemplateOpen" text="Open Template Editor..."/>
+                <MenuItem onAction="#handlePlaylistCreateOpen" text="Create Playlist..."/>
                 <MenuItem text="Close"/>
             </Menu>
         </MenuBar>

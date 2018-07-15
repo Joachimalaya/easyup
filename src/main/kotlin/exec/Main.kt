@@ -1,8 +1,8 @@
 package exec
 
 import org.slf4j.log4j12.Log4jLoggerFactory
+import playlist.Playlists
 import ui.MainWindow
-import youtube.video.Playlists
 import java.io.File
 
 val logger = Log4jLoggerFactory().getLogger("easyup")

@@ -1,4 +1,4 @@
-package youtube.video
+package playlist
 
 import com.google.api.services.youtube.model.Playlist
 
