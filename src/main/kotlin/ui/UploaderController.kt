@@ -12,6 +12,8 @@ import javafx.scene.control.TableColumn.CellEditEvent
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.text.Text
+import playlist.LabeledPlaylist
+import playlist.Playlists
 import template.fill.PlaceholderUpdateService
 import template.fill.PlaceholderUpdateService.updatePlaceholders
 import ui.alert.SizedAlert
@@ -19,8 +21,6 @@ import upload.UploadService
 import upload.UploadService.removeFromQueueWithTab
 import upload.UploadService.scheduleUpload
 import upload.resumable.RestorableUpload
-import youtube.video.LabeledPlaylist
-import youtube.video.Playlists
 import youtube.video.PrivacyStatus
 import java.io.FileNotFoundException
 import java.net.URL
@@ -32,6 +32,11 @@ class UploaderController : Initializable {
 
     companion object {
         var toRestore = RestorableUpload()
+        private val instances = mutableListOf<UploaderController>()
+
+        fun reloadPlaylists() {
+            instances.forEach(UploaderController::refreshPlaylists)
+        }
     }
 
     @FXML
@@ -107,6 +112,13 @@ class UploaderController : Initializable {
             tab.textProperty().bind(titlePreview.textProperty())
 
             updatePlaceholders(toRestore.placeholders, titlePreview, descriptionPreview, inputData)
+
+            instances.add(this)
+            tab.setOnClosed {
+                if (!instances.remove(this)) {
+                    logger.error("controller now removed from instances list")
+                }
+            }
         } catch (fnfe: FileNotFoundException) {
             SizedAlert(
                     Alert.AlertType.ERROR,
@@ -170,6 +182,11 @@ class UploaderController : Initializable {
     private fun lockUI() {
         placeholderTable.isDisable = true
         startButton.isDisable = true
+    }
+
+    private fun refreshPlaylists() {
+        // TODO: bug: refreshing unsets selected playlist item
+        playlist.items.setAll(Playlists.playlists.map { LabeledPlaylist(it) })
     }
 
 }

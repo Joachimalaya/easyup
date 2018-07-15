@@ -5,6 +5,7 @@ import com.google.api.services.youtube.model.Playlist
 import com.google.api.services.youtube.model.PlaylistSnippet
 import com.google.api.services.youtube.model.PlaylistStatus
 import playlist.Playlists
+import ui.UploaderController
 
 object CreatePlaylistService {
 
@@ -22,5 +23,6 @@ object CreatePlaylistService {
         Authorization.connection.playlists().insert("snippet,status", playlist).execute()
 
         Playlists.read()
+        UploaderController.reloadPlaylists()
     }
 }
