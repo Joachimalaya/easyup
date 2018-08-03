@@ -22,7 +22,7 @@ import java.io.InputStreamReader
  */
 object Authorization {
 
-    private val authDirectory = File(appDirectory.toString() + "/auth")
+    private val authDirectory = File("$appDirectory/auth")
     private val jsonFactory = JacksonFactory()
     private val httpTransport = NetHttpTransport()
 
@@ -35,7 +35,7 @@ object Authorization {
         val scopes = YouTubeScopes.all()
 
         // check for client secret
-        val clientId = File(authDirectory.toString() + "/client_id.json")
+        val clientId = File("$authDirectory/client_id.json")
         if (!clientId.exists()) {
             SizedAlert(Alert.AlertType.ERROR, "Could not find $clientId, necessary to connect to YouTube.\nYou can create credential files using Google APIs.\nWill now terminate.", ButtonType.OK).showAndWait()
             throw RuntimeException("Could not find $clientId, necessary to connect to YouTube.\nYou can create credential files using Google APIs.\nWill now terminate.")

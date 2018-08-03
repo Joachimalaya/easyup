@@ -137,7 +137,7 @@ object UploadService {
         }
         val restorables = toPersist.map { RestorableUpload(it) }
         jsonMapper.writeValue(UPLOAD_QUEUE_FILE, restorables)
-        logger.debug("persisted list of restorable uploads:\n" + jsonMapper.writeValueAsString(restorables))
+        logger.debug("persisted list of restorable uploads:\n${jsonMapper.writeValueAsString(restorables)}")
     }
 
     private fun tryToStartUpload() {
