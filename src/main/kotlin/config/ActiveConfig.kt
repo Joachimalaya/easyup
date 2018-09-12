@@ -37,24 +37,29 @@ val activeConfig = loadFromDefault()
 
 class ActiveConfig {
 
-    var lastVisitedDirectory = appDirectory
+    var lastVisitedVideoDirectory = appDirectory
         get() {
             if (!field.exists() || !field.isDirectory) {
                 field = appDirectory
             }
             return field
         }
-        private set
 
-    fun updateLastVisitedDirectory(selected: File?) {
-        if (selected == null) {
-            return
+    var lastVisitedThumbnailDirectory = appDirectory
+        get() {
+            if (!field.exists() || !field.isDirectory) {
+                field = appDirectory
+            }
+            return field
         }
-        lastVisitedDirectory = when (selected.isDirectory) {
-            true -> selected
-            false -> selected.parentFile
+
+    var lastVisitedTemplateDirectory = appDirectory
+        get() {
+            if (!field.exists() || !field.isDirectory) {
+                field = appDirectory
+            }
+            return field
         }
-    }
 
     var preferredVideoFormatIndex = 0
 

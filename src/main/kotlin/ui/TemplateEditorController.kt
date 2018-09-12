@@ -42,13 +42,16 @@ class TemplateEditorController : Initializable {
                 val chooser = FileChooser()
                 val targetFile: File? = chooser.showOpenDialog(rootPane.scene.window)
 
-                targetFile?.inputStream()?.use {
-                    val template = jsonMapper.readValue(it, RawUploadTemplate::class.java)
-                    titleInput.text = template.titleTemplate
-                    descriptionInput.text = template.descriptionTemplate
-                    tagsInput.text = template.tags.joinToString(", ")
+                if (targetFile != null) {
+                    targetFile.inputStream()
+                            .use {
+                                val template = jsonMapper.readValue(it, RawUploadTemplate::class.java)
+                                titleInput.text = template.titleTemplate
+                                descriptionInput.text = template.descriptionTemplate
+                                tagsInput.text = template.tags.joinToString(", ")
+                            }
+                    activeConfig.lastVisitedTemplateDirectory = targetFile.parentFile
                 }
-                activeConfig.updateLastVisitedDirectory(targetFile)
             }
         } catch (e: Exception) {
             logger.error("An unhandled Exception occurred!", e)
@@ -65,7 +68,7 @@ class TemplateEditorController : Initializable {
                 val tags = tagsInput.text.split(",").map { it.trim() }.toTypedArray()
                 val template = RawUploadTemplate(titleInput.text, descriptionInput.text, "", tags)
                 targetFile.outputStream().use { jsonMapper.writeValue(it, template) }
-                activeConfig.updateLastVisitedDirectory(targetFile)
+                activeConfig.lastVisitedTemplateDirectory = targetFile.parentFile
             }
         } catch (e: Exception) {
             logger.error("An unhandled Exception occurred!", e)

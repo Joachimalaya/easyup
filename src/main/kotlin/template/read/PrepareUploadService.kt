@@ -51,14 +51,14 @@ object PrepareUploadService {
 
     private fun askForVideoFile(window: Window): File? {
         val chooser = FileChooser()
-        chooser.initialDirectory = activeConfig.lastVisitedDirectory
+        chooser.initialDirectory = activeConfig.lastVisitedVideoDirectory
         chooser.title = "Select video to upload"
 
         chooser.extensionFilters.addAll(supportedVideoFormats + allFilesFilter)
         chooser.selectedExtensionFilter = chooser.extensionFilters[activeConfig.preferredVideoFormatIndex]
 
-        val videoFile = chooser.showOpenDialog(window)
-        activeConfig.updateLastVisitedDirectory(videoFile)
+        val videoFile: File? = chooser.showOpenDialog(window)
+        activeConfig.lastVisitedVideoDirectory = videoFile?.parentFile ?: activeConfig.lastVisitedVideoDirectory
         activeConfig.preferredVideoFormatIndex = chooser.extensionFilters.indexOf(chooser.selectedExtensionFilter)
 
         return videoFile
@@ -67,13 +67,13 @@ object PrepareUploadService {
     private fun askForTemplate(window: Window): RawUploadTemplate? {
         val chooser = FileChooser()
         chooser.title = "Select a template file"
-        chooser.initialDirectory = activeConfig.lastVisitedDirectory
+        chooser.initialDirectory = activeConfig.lastVisitedTemplateDirectory
         chooser.extensionFilters.addAll( //
                 FileChooser.ExtensionFilter("template definitions (JSON)", "*.json"), //
                 FileChooser.ExtensionFilter("all files", "*.*"))
 
-        val templateFile = chooser.showOpenDialog(window)
-        activeConfig.updateLastVisitedDirectory(templateFile)
+        val templateFile: File? = chooser.showOpenDialog(window)
+        activeConfig.lastVisitedTemplateDirectory = templateFile?.parentFile ?: activeConfig.lastVisitedTemplateDirectory
         return if (templateFile != null) {
             jsonMapper.readValue(templateFile, RawUploadTemplate::class.java)
         } else {
@@ -83,16 +83,16 @@ object PrepareUploadService {
 
     private fun askForThumbnail(window: Window): File? {
         val chooser = FileChooser()
-        chooser.initialDirectory = activeConfig.lastVisitedDirectory
+        chooser.initialDirectory = activeConfig.lastVisitedThumbnailDirectory
         chooser.title = "Select a thumbnail"
         chooser.extensionFilters.addAll(supportedThumbnailFormats + allFilesFilter)
 
-        val thumbnailFile = chooser.showOpenDialog(window)
-        activeConfig.updateLastVisitedDirectory(thumbnailFile)
+        val thumbnailFile: File? = chooser.showOpenDialog(window)
+        activeConfig.lastVisitedThumbnailDirectory = thumbnailFile?.parentFile ?: activeConfig.lastVisitedThumbnailDirectory
         return thumbnailFile
     }
 
-    val supportedVideoFormats = listOf(FileChooser.ExtensionFilter("QuickTime Movie", "*.mov"),
+    private val supportedVideoFormats = listOf(FileChooser.ExtensionFilter("QuickTime Movie", "*.mov"),
             FileChooser.ExtensionFilter("MP4", "*.mp4", "*.mpeg4"),
             FileChooser.ExtensionFilter("Audio Video Interleaved", "*.avi"),
             FileChooser.ExtensionFilter("Windows Media Video", "*.wmv"),
