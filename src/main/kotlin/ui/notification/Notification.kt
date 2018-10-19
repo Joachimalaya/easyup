@@ -4,6 +4,7 @@ import com.google.common.base.Stopwatch
 import javafx.application.Platform
 import javafx.geometry.Insets
 import javafx.scene.Scene
+import javafx.scene.input.MouseEvent
 import javafx.scene.layout.GridPane
 import javafx.scene.text.Text
 import javafx.stage.Stage
@@ -28,6 +29,10 @@ class Notification(message: String) : Stage(StageStyle.UNDECORATED) {
         rootPane.padding = Insets(50.0, 50.0, 50.0, 50.0)
         rootPane.add(Text(message), 0, 0)
 
+        addEventHandler(MouseEvent.MOUSE_CLICKED) {
+            Platform.runLater(this::close)
+            it.consume()
+        }
 
         scene = Scene(rootPane)
 
@@ -56,7 +61,7 @@ class Notification(message: String) : Stage(StageStyle.UNDECORATED) {
                 Thread.sleep(100)
             }
 
-            Platform.runLater { close() }
+            Platform.runLater(this::close)
 
         }.start()
     }
