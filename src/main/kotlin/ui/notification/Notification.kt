@@ -16,6 +16,8 @@ import java.util.concurrent.TimeUnit
  */
 class Notification(message: String) : Stage(StageStyle.UNDECORATED) {
 
+    var cancelled = false
+
     init {
         x = 0.0
         y = 0.0
@@ -30,6 +32,7 @@ class Notification(message: String) : Stage(StageStyle.UNDECORATED) {
         rootPane.add(Text(message), 0, 0)
 
         addEventHandler(MouseEvent.MOUSE_CLICKED) {
+            cancelled = true
             Platform.runLater(this::close)
             it.consume()
         }
@@ -55,7 +58,7 @@ class Notification(message: String) : Stage(StageStyle.UNDECORATED) {
             }
 
             val elapsedFadeoutTime = Stopwatch.createStarted()
-            while (elapsedFadeoutTime.elapsed(TimeUnit.MILLISECONDS) < fadeoutTime) {
+            while (!cancelled && elapsedFadeoutTime.elapsed(TimeUnit.MILLISECONDS) < fadeoutTime) {
                 Platform.runLater { opacity = 1.0 - elapsedFadeoutTime.elapsed(TimeUnit.MILLISECONDS).toDouble() / fadeoutTime.toDouble() }
 
                 Thread.sleep(100)
