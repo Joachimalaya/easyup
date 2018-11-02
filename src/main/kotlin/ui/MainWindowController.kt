@@ -1,7 +1,6 @@
 package ui
 
 import exec.logger
-import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.fxml.Initializable
@@ -40,7 +39,7 @@ class MainWindowController : Initializable {
     }
 
     @FXML
-    private fun handleTemplateOpen(event: ActionEvent) {
+    private fun handleTemplateOpen() {
         try {
             val templateEditor = Stage()
             val scene = Scene(FXMLLoader.load(javaClass.getResource("TemplateEditor.fxml")))
@@ -60,7 +59,7 @@ class MainWindowController : Initializable {
     }
 
     @FXML
-    private fun handlePlaylistCreateOpen(event: ActionEvent) {
+    private fun handlePlaylistCreateOpen() {
         try {
             val playlistCreator = Stage()
             val scene = Scene(FXMLLoader.load(javaClass.getResource("PlaylistCreator.fxml")))
