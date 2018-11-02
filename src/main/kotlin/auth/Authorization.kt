@@ -31,7 +31,6 @@ object Authorization {
         get() = getOrCreateConnection()
 
     private fun createAuthorizedYouTube(): YouTube {
-
         val scopes = YouTubeScopes.all()
 
         // check for client secret
@@ -44,9 +43,11 @@ object Authorization {
         clientId.inputStream().use {
             InputStreamReader(it).use {
                 val clientSecrets = GoogleClientSecrets.load(jsonFactory, it)
-                val datastore = FileDataStoreFactory(authDirectory).getDataStore<StoredCredential>("easyUpDatastore")
+                val dataStore = FileDataStoreFactory(authDirectory).getDataStore<StoredCredential>("easyUpDatastore")
 
-                val flow = GoogleAuthorizationCodeFlow.Builder(httpTransport, jsonFactory, clientSecrets, scopes).setCredentialDataStore(datastore).build()
+                val flow = GoogleAuthorizationCodeFlow.Builder(httpTransport, jsonFactory, clientSecrets, scopes)
+                        .setCredentialDataStore(dataStore)
+                        .build()
 
                 val localReceiver = LocalServerReceiver.Builder().setPort(8080).build()
 
