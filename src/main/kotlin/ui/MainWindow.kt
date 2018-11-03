@@ -12,6 +12,8 @@ import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.stage.Stage
 import ui.alert.SizedAlert
+import ui.dialog.PlaylistCreator
+import ui.dialog.TemplateEditor
 import upload.UploadService
 
 class MainWindow : Application() {
@@ -40,7 +42,8 @@ class MainWindow : Application() {
             val root = FXMLLoader.load<Parent>(javaClass.getResource(layoutPath))
             val scene = Scene(root)
 
-            cssFiles.forEach { scene.stylesheets.add(it) }
+            scene.stylesheets.addAll(cssFiles)
+            logger.info("UI resources loaded")
 
             primaryStage.scene = scene
             primaryStage.minWidth = 1000.0
@@ -59,13 +62,16 @@ class MainWindow : Application() {
                     val reallyClose = SizedAlert(Alert.AlertType.WARNING, "Closing the application while an upload is running means all progress will be lost.\nStill quit?", ButtonType.YES, ButtonType.NO).showAndWait()
                     if (reallyClose.isPresent && reallyClose.get() == ButtonType.YES) {
                         // stop uploading thread
-                        // TODO: wrap cancel request in method
                         UploadService.cancelUpload = true
                     } else {
                         it.consume()
                     }
                 }
             }
+            logger.info("main window initialized")
+
+            PlaylistCreator.initialize(primaryStage.scene.window)
+            TemplateEditor.initialize(primaryStage.scene.window)
         } catch (e: Exception) {
             logger.error("An unhandled exception occurred", e)
         }

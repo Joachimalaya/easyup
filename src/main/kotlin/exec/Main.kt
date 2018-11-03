@@ -9,11 +9,14 @@ val logger = Log4jLoggerFactory().getLogger("easyup")
 val appDirectory = File("${System.getProperty("user.home")}/.easyUp")
 
 fun main(args: Array<String>) {
+    logger.info("running on java runtime version ${Runtime.version()}")
+
     // ensure that application directory exists
     appDirectory.mkdirs()
 
     // load playlists eagerly
     Playlists.read()
 
+    logger.info("setup done; starting UI...")
     MainWindow().launchApp(args)
 }

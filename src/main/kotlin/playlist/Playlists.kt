@@ -16,6 +16,7 @@ object Playlists {
      */
     fun read() {
         try {
+            logger.info("asking server for a list of available playlists")
             playlists = Authorization.connection.playlists().list("contentDetails,snippet,status").setMine(true).setMaxResults(50).execute().items.toList()
         } catch (uhe: UnknownHostException) {
             logger.error("Could not connect to google servers. List of playlists not available.", uhe)

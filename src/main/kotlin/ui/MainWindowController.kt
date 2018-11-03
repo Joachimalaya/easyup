@@ -2,14 +2,12 @@ package ui
 
 import exec.logger
 import javafx.fxml.FXML
-import javafx.fxml.FXMLLoader
 import javafx.fxml.Initializable
-import javafx.scene.Scene
 import javafx.scene.control.Tab
 import javafx.scene.control.TabPane
 import javafx.scene.layout.Pane
-import javafx.stage.Modality
-import javafx.stage.Stage
+import ui.dialog.PlaylistCreator
+import ui.dialog.TemplateEditor
 import ui.tab.AddUploadTabService
 import upload.resumable.UnfinishedUploadLoadService
 import java.net.URL
@@ -40,42 +38,12 @@ class MainWindowController : Initializable {
 
     @FXML
     private fun handleTemplateOpen() {
-        try {
-            val templateEditor = Stage()
-            val scene = Scene(FXMLLoader.load(javaClass.getResource("TemplateEditor.fxml")))
-            scene.stylesheets.add(javaClass.getResource("application.css").toExternalForm())
-            templateEditor.scene = scene
-            templateEditor.title = "easyUp Template Editor"
-
-            templateEditor.initOwner(rootPane.scene.window)
-            templateEditor.initModality(Modality.APPLICATION_MODAL)
-            templateEditor.minWidth = 640.0
-            templateEditor.minHeight = 240.0
-
-            templateEditor.show()
-        } catch (e: Exception) {
-            logger.error("An unhandled Exception occurred!", e)
-        }
+        TemplateEditor.stage.show()
     }
 
     @FXML
     private fun handlePlaylistCreateOpen() {
-        try {
-            val playlistCreator = Stage()
-            val scene = Scene(FXMLLoader.load(javaClass.getResource("PlaylistCreator.fxml")))
-            scene.stylesheets.add(javaClass.getResource("application.css").toExternalForm())
-            playlistCreator.scene = scene
-            playlistCreator.title = "easyUp Playlist Creator"
-
-            playlistCreator.initOwner(rootPane.scene.window)
-            playlistCreator.initModality(Modality.APPLICATION_MODAL)
-            playlistCreator.minWidth = 640.0
-            playlistCreator.minHeight = 240.0
-
-            playlistCreator.show()
-        } catch (e: Exception) {
-            logger.error("An unhandled Exception occurred!", e)
-        }
+        PlaylistCreator.stage.show()
     }
 
     fun addTab(tab: Tab) {

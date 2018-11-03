@@ -1,4 +1,4 @@
-package ui.tab
+package ui.dialog
 
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
@@ -40,7 +40,7 @@ class PlaylistCreatorController : Initializable {
                 privacyStatus.value
         ))
         SizedAlert(Alert.AlertType.CONFIRMATION, "Playlist created.", ButtonType.OK).showAndWait()
-        (rootPane.scene.window as Stage).close()
+        (rootPane.scene.window as Stage).hide()
     }
 
     @FXML

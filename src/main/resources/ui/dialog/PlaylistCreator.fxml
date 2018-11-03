@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import youtube.video.PrivacyStatus?>
 <GridPane hgap="5" styleClass="root" vgap="5" xmlns="http://javafx.com/javafx/8.0.121"
-          xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.tab.PlaylistCreatorController" fx:id="rootPane">
+          xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.dialog.PlaylistCreatorController" fx:id="rootPane">
 
     <padding>
         <Insets bottom="5" left="5" right="5" top="5"/>
