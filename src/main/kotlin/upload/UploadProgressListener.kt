@@ -34,7 +34,8 @@ class UploadProgressListener(private val uploadJob: UploadJob, private val stopw
 
     override fun progressChanged(uploader: MediaHttpUploader) {
         if (UploadService.cancelUpload) {
-            throw RuntimeException("termination of upload thread requested")
+            Thread.currentThread()
+                    .interrupt()
         }
         when (uploader.uploadState!!) {
             MediaHttpUploader.UploadState.NOT_STARTED ->
