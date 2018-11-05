@@ -20,6 +20,7 @@ import ui.alert.SizedAlert
 import upload.UploadService
 import upload.UploadService.removeFromQueueWithTab
 import upload.UploadService.scheduleUpload
+import upload.UploadServiceState
 import upload.resumable.RestorableUpload
 import youtube.video.PrivacyStatus
 import java.io.FileNotFoundException
@@ -139,7 +140,7 @@ class UploaderController : Initializable {
     private fun handleCloseRequest(event: Event) {
         try {
             if (UploadService.uploadingTab(tab)) {
-                // TODO: implement
+                UploadService.state = UploadServiceState.CANCEL_CURRENT
                 SizedAlert(Alert.AlertType.ERROR, "Removing the currently running upload is not supported.", ButtonType.OK)
             } else {
                 removeFromQueueWithTab(tab)

@@ -15,6 +15,7 @@ import ui.alert.SizedAlert
 import ui.dialog.PlaylistCreator
 import ui.dialog.TemplateEditor
 import upload.UploadService
+import upload.UploadServiceState
 
 class MainWindow : Application() {
 
@@ -62,7 +63,7 @@ class MainWindow : Application() {
                     val reallyClose = SizedAlert(Alert.AlertType.WARNING, "Closing the application while an upload is running means all progress will be lost.\nStill quit?", ButtonType.YES, ButtonType.NO).showAndWait()
                     if (reallyClose.isPresent && reallyClose.get() == ButtonType.YES) {
                         // stop uploading thread
-                        UploadService.cancelUpload = true
+                        UploadService.state = UploadServiceState.TERMINATE
                     } else {
                         it.consume()
                     }
