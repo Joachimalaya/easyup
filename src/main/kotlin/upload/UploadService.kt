@@ -90,7 +90,7 @@ object UploadService {
         }
     }
 
-    fun uploading() = currentUpload != null && currentUpload!!.isAlive
+    fun uploading() = currentUpload != null && !currentUpload!!.isAlive
 
     fun uploadingTab(tab: Tab) = currentUpload?.uploadTab == tab
 
