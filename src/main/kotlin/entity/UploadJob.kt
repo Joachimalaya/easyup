@@ -100,6 +100,7 @@ class UploadJob(
 
         // start next queued upload
         Platform.runLater {
+            uploadTab.tabPane.selectionModel.select(uploadTab.tabPane.selectionModel.selectedIndex + 1)
             uploadTab.tabPane.tabs.remove(uploadTab)
             Notification("upload of ${video.snippet.title} done").showAndFadeOut(10000, 5000)
         }

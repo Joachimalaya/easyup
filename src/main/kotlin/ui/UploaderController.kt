@@ -141,7 +141,6 @@ class UploaderController : Initializable {
         try {
             if (UploadService.uploadingTab(tab)) {
                 UploadService.state = UploadServiceState.CANCEL_CURRENT
-                SizedAlert(Alert.AlertType.ERROR, "Removing the currently running upload is not supported.", ButtonType.OK)
             } else {
                 removeFromQueueWithTab(tab)
             }
