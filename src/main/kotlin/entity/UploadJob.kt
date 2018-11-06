@@ -44,7 +44,11 @@ class UploadJob(
         private val uploadBufferSize = numBytes(256, BinaryPrefix.MEBIBYTE)
     }
 
+    var running = false
+        private set
+
     override fun run() {
+        running = true
         val video = Video()
 
         video.status = VideoStatus()
@@ -98,6 +102,7 @@ class UploadJob(
                     }
                 }
 
+        running = false
         // start next queued upload
         Platform.runLater {
             uploadTab.tabPane.selectionModel.select(uploadTab.tabPane.selectionModel.selectedIndex + 1)
